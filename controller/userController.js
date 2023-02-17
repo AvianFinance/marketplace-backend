@@ -28,8 +28,8 @@ const loggedUser = async (req, res) => {
             twitterLink: "",
             instaLink: "",
             site: "",
-            profileImage: "",
-            coverImage: "",
+            profileImage: "https://res.cloudinary.com/isuruieee/image/upload/v1676639701/00073_ysx5m1.png",
+            coverImage: "https://res.cloudinary.com/isuruieee/image/upload/v1676640391/WhatsApp_Image_2023-02-17_at_18.56.00_wjszpo.jpg",
             createdAt: new Date(),
             modifiedAt: new Date(),
           };
