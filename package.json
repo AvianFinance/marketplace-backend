@@ -1,0 +1,23 @@
+{
+  "name": "backend-web-service",
+  "version": "1.0.0",
+  "description": "Backend listner and API",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "dotenv": "^16.0.3",
+    "hardhat": "^2.12.7",
+    "nodemon": "^2.0.20"
+  }
+}
