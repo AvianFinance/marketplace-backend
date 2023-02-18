@@ -19,17 +19,26 @@
 
 ### Collection Routes
 
- - POST - /api/collection
+ - POST - /api/collection - create a new collection
  ```
         {
             "address" : "aaaabbbbbbb888888888",
             "name" : "collection1",
             "symbol" : "Col1",
-            "tokenType" : "ERC721"
+            "tokenType" : "ERC721",
+            "createdBy" : "666aaaaaaaaa"
         }
 ```
 ### Rental exlpore routes
 
+- GET - /api/rental/explore - get all collections for rental(Explore 1st page)
 
-### buy explore routes
+### Buy explore routes
+
+- GET - /api/buy/explore - get all collections for sell(Explore 1st page)
+
+### Profile routes
+
+- GET -   - rented ones
+
 

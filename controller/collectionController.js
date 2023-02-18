@@ -13,6 +13,7 @@ const createCollection = async (req, res) => {
         symbol: req.body.symbol,
         tokenType: req.body.tokenType,
         tokens: {},
+        createdBy: req.body.createdBy,
         createdAt: new Date(),
         modifiedAt: new Date()
     };
