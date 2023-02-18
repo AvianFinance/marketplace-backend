@@ -1,25 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Rental  = require('../model/Rental');
 
-const dbo = require("../database/conn");
-const { getRentals } = require('../controller/rentalController');
+const { getRentalCollections, getRentalCollectionTokens } = require('../controller/rentalController');
 
-// router.get('/',  getRentals);
+// returns all collections with 4 tokens with images
+router.get('/explore',  getRentalCollections);
+//returns details of all tokens inside the collection
+router.get('/explore/:collectionId',  getRentalCollectionTokens);  
 
-router.get('/all', (req, res) => {
-    const dbConnect = dbo.getDb();
-
-    dbConnect
-        .collection("rentals")
-        .find({}).limit(50)
-        .toArray(function (err, result) {
-        if (err) {
-            res.status(400).send("Error fetching listings!");
-        } else {
-            res.json(result);
-        }
-        });
-});
 
 module.exports = router;

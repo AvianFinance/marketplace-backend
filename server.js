@@ -3,7 +3,9 @@ const cors = require("cors");
 
 const dbo = require("./database/conn");
 const rentalRoutes = require('./routes/rentalRoute');
+const buyRoutes = require('./routes/buyRoute')
 const userRoutes = require("./routes/userRoutes")
+const collectionRoutes = require("./routes/collectionRoute")
 
 const app = express()
 app.use(cors());
@@ -12,6 +14,8 @@ app.use(express.json());
 //Middleware
 app.use('/api/rental', rentalRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/buy', buyRoutes);
+app.use('/api/collection', collectionRoutes);
 
 //Main Route
 app.get('/', (req,res) => {
