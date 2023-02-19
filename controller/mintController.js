@@ -1,4 +1,4 @@
-const db = require('../database/conn')
+const dbo = require('../database/conn')
 const mplace_contract = require('../config/contract')
 const { uploadToPinata } = require('../services/pinata_upload')
 const { getTokenCounter } = require('../services/token_counter')
@@ -27,6 +27,23 @@ const mintNFT = async (req, res) => {
     res.send(ipfsHash).status(200);
 }
 
+const saveMintNFT = async (req, res) => {
+    const db = dbo.getDb();
+    let collection = await db.collection("nft_details");
+    const nftDocument = {
+        coll_addr: req.body.coll_addr,
+        token_id: req.body.token_id,
+        name: req.body.name,
+        desc: req.body.desc,
+        uri: req.body.uri,
+    };
+    let create = await collection.insertOne(nftDocument);
+    let nftCreated = {_id: create.insertedId};
+    let nft = await collection.findOne(nftCreated);
+    res.send(nft).status(201);
+}
+
 module.exports = { 
-    mintNFT
+    mintNFT,
+    saveMintNFT
 }

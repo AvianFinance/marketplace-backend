@@ -72,5 +72,16 @@ FormData
     nftDescription - description
 
 ```
+- POST - /api/mint - save nft details
+```     
+    {
+        "coll_addr":"0x9B0365F4C6F086A871a5F2d4e2e86D290936Cd5B",
+        "token_id":8,
+        "name":"GOAT",
+        "desc":"Anving fun",
+        "uri":"https://gateway.pinata.cloud/ipfs/QmXWsVv1xGBPZPEZScB8keE4bbBVpHzLaMq8aDPHa28F4M"
+    }
+
+```
 
 
