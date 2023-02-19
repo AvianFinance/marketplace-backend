@@ -41,17 +41,19 @@ const getBuyCollections = async (req, res) => {
 const getBuyCollectionTokens = async (req, res) => {
     const m_contract = mplace_contract.createABI();
     const token_address = req.params.collectionId
+
     const tx = await m_contract.getSListedAdddressTokens(token_address);
 
-    let query = { coll_addr : "0x71146F50Cf97A5B2b8D66bc5bfF93b86Cd3FF1f1", token_id : 0}
     const db = dbo.getDb();
     let collection = await db.collection("nft_details");
  
     let output = []
     for (i in tx) {
       let query = { coll_addr : token_address, token_id : tx[i].toNumber()}
-      let result = await collection.find(query).toArray();
-      output.push(result[0])
+      let result = (await collection.find(query).toArray())[0];
+      const listing= await m_contract.getASListing(token_address, tx[i].toNumber() );
+      result.price = listing.price
+      output.push(result)
     }
     res.send(output).status(200);
 }
