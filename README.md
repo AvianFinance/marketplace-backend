@@ -50,6 +50,7 @@ Response
 ### Rental exlpore routes
 
 - GET - /api/rental/explore - get all collections for rental(Explore 1st page)
+- GET - /api/rental/explore/:collectionAddress - get all rental tokens for collections
 
 ### Buy explore routes
 
