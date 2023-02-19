@@ -29,6 +29,21 @@ const createCollection = async (req, res) => {
    };
 }
 
+// @desc Get the collections
+// @route GET /api/collection/:userAddress
+const getCollectionByID = async (req, res) => {
+   console.log(req.params.userAddress)
+   const db = dbo.getDb();
+   let query = {createdBy: req.params.userAddress};
+
+   db.collection("collections").find(query).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      res.send(result).status(200)
+   })
+}
+
 module.exports = { 
-  createCollection
+  createCollection,
+  getCollectionByID
 }
