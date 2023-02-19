@@ -61,4 +61,16 @@ Response
 
 - GET -   - rented ones
 
+### Mint Routes
+
+- POST - /api/mint/ipfs  - upload to ipfs
+```     
+FormData
+    collectionAddress - 0x71146F50Cf97A5B2b8D66bc5bfF93b86Cd3FF1f1
+    image - image.png
+    nftName - bear
+    nftDescription - description
+
+```
+
 
