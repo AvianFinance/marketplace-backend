@@ -10,7 +10,7 @@ const getBuyCollections = async (req, res) => {
     let collection = await db.collection(collectionName);
 
     const tx = await m_contract.getSListedAdddresses() // Gives all the token addresses listed for renting
-    console.log(tx)
+    // console.log(tx)
     // tx = ["0xA5e80F4980878b7C2c23D6fA002358A47d0060a3","0x4909493F604AB882327ca880ad5B330e2B3C43C1"]
     output = []
    
@@ -20,6 +20,7 @@ const getBuyCollections = async (req, res) => {
         
         if (result.tokens.length > 0) {
             let tokenList = result.tokens
+            result.count = tokenList.length
             let uriList = []
             for (token in tokenList) {
               // console.log(tokenList[token])
@@ -38,10 +39,21 @@ const getBuyCollections = async (req, res) => {
 // @desc Get the rentals in a collection
 // @route GET /api/buy/explore/:collectionID
 const getBuyCollectionTokens = async (req, res) => {
-  const m_contract = mplace_contract.createABI();
-  const token_address = "0xA5e80F4980878b7C2c23D6fA002358A47d0060a3"
-  const tx = await m_contract.getSListedAdddressTokens(token_address);
-  res.send(tx).status(200);
+    const m_contract = mplace_contract.createABI();
+    const token_address = req.params.collectionId
+    const tx = await m_contract.getSListedAdddressTokens(token_address);
+
+    let query = { coll_addr : "0x71146F50Cf97A5B2b8D66bc5bfF93b86Cd3FF1f1", token_id : 0}
+    const db = dbo.getDb();
+    let collection = await db.collection("nft_details");
+ 
+    let output = []
+    for (i in tx) {
+      let query = { coll_addr : token_address, token_id : tx[i].toNumber()}
+      let result = await collection.find(query).toArray();
+      output.push(result[0])
+    }
+    res.send(output).status(200);
 }
 
 module.exports = { 

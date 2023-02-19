@@ -54,6 +54,7 @@ Response
 ### Buy explore routes
 
 - GET - /api/buy/explore - get all collections for sell(Explore 1st page)
+- GET - /api/buy/explore/:collectionAddress - get all tokens for collections
 
 ### Profile routes
 
