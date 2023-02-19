@@ -1,6 +1,7 @@
 const dbo = require('../database/conn')
 const mplace_contract = require('../config/contract')
 const collectionName = "collections"
+const {getUserNameByAddress} = require('./userController')
 
 // @desc Get the rentals
 // @route GET /api/buy/explore
@@ -15,24 +16,26 @@ const getBuyCollections = async (req, res) => {
     output = []
    
     for (i in tx) {
-        let query = { _id: tx[i]};
-        let result = await collection.findOne(query);
-        
-        if (result.tokens.length > 0) {
-            let tokenList = result.tokens
-            result.count = tokenList.length
-            let uriList = []
-            for (token in tokenList) {
-              // console.log(tokenList[token])
-              uriList.push(tokenList[token].uri)
-            }
-            if(uriList.length > 4) {
-              uriList = uriList.slice(0, 4)
-            }
-            result.tokens = uriList
-        }
-        output.push(result);
-    }
+      let query = { _id: tx[i]};
+      let result = await collection.findOne(query);
+      let userName = await getUserNameByAddress(result.createdBy)
+      result.createdUserName = userName
+
+      let tokensList = await db.collection("nft_details").find({coll_addr: tx[i]}).toArray();
+
+      if (tokensList.length > 0) {
+          result.count = tokensList.length
+          let uriList = []
+          for (token in tokensList) {
+            uriList.push(tokensList[token].uri)
+          }
+          if(uriList.length > 4) {
+            uriList = uriList.slice(0, 4)
+          }
+          result.tokens = uriList
+      }
+      output.push(result);
+  }
     res.send(output).status(200)
 }
 

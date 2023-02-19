@@ -60,8 +60,17 @@ const updateUser = async (req, res) => {
     res.send(result).status(200);
 }
 
+async function getUserNameByAddress(userAdress) {
+    const db = dbo.getDb();
+    let collection = await db.collection("users");
+    let query = {_id: userAdress};
+    let result = await collection.findOne(query);
+    return (result.name)
+}
+
 module.exports = { 
     getUserById,
     loggedUser,
-    updateUser
+    updateUser,
+    getUserNameByAddress
 }
