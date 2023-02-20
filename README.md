@@ -81,7 +81,8 @@ FormData
         "token_id":8,
         "name":"GOAT",
         "desc":"Anving fun",
-        "uri":"https://gateway.pinata.cloud/ipfs/QmXWsVv1xGBPZPEZScB8keE4bbBVpHzLaMq8aDPHa28F4M"
+        "uri":"https://gateway.pinata.cloud/ipfs/QmXWsVv1xGBPZPEZScB8keE4bbBVpHzLaMq8aDPHa28F4M",
+        "minter" : "wallet_address"
     }
 
 ```

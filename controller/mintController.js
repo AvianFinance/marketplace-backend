@@ -29,6 +29,7 @@ const mintNFT = async (req, res) => {
 
 const saveMintNFT = async (req, res) => {
     const db = dbo.getDb();
+    let collectionType = await db.collection("collections").findOne({_id:req.body.coll_addr});
     let collection = await db.collection("nft_details");
     const nftDocument = {
         coll_addr: req.body.coll_addr,
@@ -36,6 +37,11 @@ const saveMintNFT = async (req, res) => {
         name: req.body.name,
         desc: req.body.desc,
         uri: req.body.uri,
+        token_type: collectionType.tokenType,
+        owner: req.body.minter,
+        minter: req.body.minter,
+        expiry: 0000,
+        user: req.body.minter,
     };
     let create = await collection.insertOne(nftDocument);
     let nftCreated = {_id: create.insertedId};
