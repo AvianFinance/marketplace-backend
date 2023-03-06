@@ -30,7 +30,7 @@ async function sendMetadata(IPFSHash, nft_title, nft_desc, tokenId) {
     const JSONBody = {
         name: nft_title,
         tokenId: tokenId,
-        image: `https://gateway.pinata.cloud/ipfs/${IPFSHash}/`,
+        image: IPFSHash,
         description: nft_desc,
         attributes: []
     }
@@ -57,5 +57,5 @@ async function sendMetadata(IPFSHash, nft_title, nft_desc, tokenId) {
 }
 
 module.exports = {
-    uploadToPinata,
+    sendMetadata,
 };

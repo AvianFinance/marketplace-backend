@@ -21,6 +21,16 @@ async function getTokenCounter(token_address) {
     }
 }
 
+async function getTokenType(token_address) {
+
+    const provider = new ethers.providers.JsonRpcProvider("https://api.avax-test.network/ext/bc/C/rpc")
+    const m_contract = mplace_contract.createABI();
+    const type = await m_contract.isRentableNFT(token_address);
+
+    return type
+}
+
 module.exports = {
-    getTokenCounter
+    getTokenCounter,
+    getTokenType,
 };
