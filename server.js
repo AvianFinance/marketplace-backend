@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require("cors");
 const bodyParser = require("body-parser")
+const swaggerJsdoc = require("swagger-jsdoc")
+const swaggerUi = require("swagger-ui-express")
 
 const dbo = require("./database/conn");
 const rentalRoutes = require('./routes/rentalRoute');
@@ -14,8 +16,29 @@ const app = express()
 app.use(cors());
 app.use(express.json());
 
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Backend API",
+      version: "1.0.0",
+      description:
+        "NFT marketplace CRUD API application made with Express and documented with Swagger",
+    },
+  },
+  servers: [
+    {
+      url: "http://localhost:8080",
+    },
+  ],
+  apis: ["./routes/*.js"],
+};
+
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }))
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use( "/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //Middleware
 app.use('/api/rental', rentalRoutes);
@@ -30,9 +53,9 @@ app.get('/', (req,res) => {
     res.send("We are online")
 })
 
-//Initial worker thread
-// const {Worker} = require("worker_threads");
-// const worker = new Worker("./workers/index",{workerData: "Main listner"});
+// Initial worker thread
+const {Worker} = require("worker_threads");
+const worker = new Worker("./workers/index",{workerData: "Main listner"});
 
 const PORT = process.env.PORT || 8080;
 dbo.connectToServer(function (err) {

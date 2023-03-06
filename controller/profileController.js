@@ -26,7 +26,6 @@ const getRented = async (req, res) => {
 }
 
 const getCollections = async (req, res) => {
-    console.log(req.params.userAdd)
     const db = dbo.getDb();
     let collections = await db.collection("collections").find({createdBy: req.params.userAdd}).toArray();
    

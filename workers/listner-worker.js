@@ -15,14 +15,54 @@ async function getTransfer(){
 
     mplace_contract.on("ItemListed", (seller, nftAddress, tokenId, price)=>{
 
-        let transferEvent ={
+        let transferEvent = {
             seller: seller,
             nftAddress: nftAddress,
             tokenId: tokenId,
             price: price,
         }
 
-        parentPort.postMessage(transferEvent);
+        let message = {
+            event: "ItemListed",
+            data : transferEvent
+        }
+
+        parentPort.postMessage(message);
+
+    })
+
+    mplace_contract.on("ItemCanceled", (seller, nftAddress, tokenId)=>{
+
+        let transferEvent ={
+            seller: seller,
+            nftAddress: nftAddress,
+            tokenId: tokenId,
+        }
+
+        let message = {
+            event: "ItemCanceled",
+            data : transferEvent
+        }
+
+        parentPort.postMessage(message);
+
+    })
+
+    mplace_contract.on("ItemBought", (buyer, nftAddress, tokenId, price)=>{
+
+        let transferEvent ={
+            buyer: buyer,
+            nftAddress: nftAddress,
+            tokenId: tokenId,
+            price: price,
+        }
+
+        let message = {
+            event: "ItemBought",
+            data : transferEvent
+        }
+
+        parentPort.postMessage(message);
 
     })
 
@@ -39,7 +79,51 @@ async function getTransfer(){
             expires: expires,
         }
 
-        parentPort.postMessage(transferEvent);
+        let message = {
+            event: "NFTListed",
+            data : transferEvent
+        }
+
+        parentPort.postMessage(message);
+    })
+
+    mplace_contract.on("NFTRented", (owner, user, nftContract, tokenId, startDateUNIX, endDateUNIX, expires, rentalFee)=>{
+
+        let transferEvent ={
+            owner: owner,
+            user: user,
+            nftContract: nftContract, 
+            tokenId: tokenId, 
+            startDateUNIX: startDateUNIX, 
+            endDateUNIX: endDateUNIX, 
+            expires: expires,
+            rentalFee: rentalFee, 
+        }
+
+        let message = {
+            event: "NFTRented",
+            data : transferEvent
+        }
+
+        parentPort.postMessage(message);
+
+    })
+
+    mplace_contract.on("NFTUnlisted", (unlistSender, nftContract, tokenId, refund)=>{
+
+        let transferEvent ={
+            unlistSender: unlistSender,
+            nftContract: nftContract,
+            tokenId: tokenId, 
+            refund: refund, 
+        }
+
+        let message = {
+            event: "NFTUnlisted",
+            data : transferEvent
+        }
+
+        parentPort.postMessage(message);
 
     })
 }

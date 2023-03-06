@@ -1,0 +1,5 @@
+* saveMintNFT - Projection not working in MongoDB findOne
+* use mongoose and convert to schemas
+* use schema defn in swagger. Refer : https://blog.logrocket.com/documenting-express-js-api-swagger/
+* global error handling
+
