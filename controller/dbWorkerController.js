@@ -140,12 +140,12 @@ async function itemBoughtEvent(data) {
         await client.connect();
         const collection = client.db("AVFX_Events").collection("sell_listings");
         const result = await collection.updateOne(query, updates);
-        console.log(`A document updated with the _id: ${result.upsertedId}`,);
+        console.log(`A document updated with the _id: ${result.upsertedId}`);
         console.log(result)
 
         const collection1 = client.db("AVFX_Events").collection("nft_details");
-        const result1 = await collection.updateOne(query1, updates1);
-        console.log(`A document updated with the _id: ${result1.upsertedId}`,);
+        const result1 = await collection1.updateOne(query1, updates1);
+        console.log(`A document updated with the _id: ${result1.upsertedId}`);
         console.log(result1)
   
     } catch(e) {
@@ -209,12 +209,12 @@ async function nftRentedEvent(data) {
         await client.connect();
         const collection = client.db("AVFX_Events").collection("rental_listings");
         const result = await collection.updateOne(query, updates);
-        console.log(`A document updated with the _id: ${result.upsertedId}`,);
+        console.log(`A document updated with the _id: ${result.upsertedId}`);
         console.log(result)
 
         const collection1 = client.db("AVFX_Events").collection("nft_details");
-        const result1 = await collection.updateOne(query1, updates1);
-        console.log(`A document updated with the _id: ${result1.upsertedId}`,);
+        const result1 = await collection1.updateOne(query1, updates1);
+        console.log(`A document updated with the _id: ${result1.upsertedId}`);
         console.log(result1)
   
     } catch(e) {

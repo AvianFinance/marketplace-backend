@@ -2,4 +2,4 @@
 * use mongoose and convert to schemas
 * use schema defn in swagger. Refer : https://blog.logrocket.com/documenting-express-js-api-swagger/
 * global error handling
-
+* remove unused token array in the collection and update the post request
