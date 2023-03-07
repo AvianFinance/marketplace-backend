@@ -25,6 +25,29 @@ const getRented = async (req, res) => {
    
 }
 
+const getListed = async (req, res) => {
+    const db = dbo.getDb();
+    let output = []
+
+    let slist = await db.collection("sell_listings").find({seller: req.params.userAdd, status: "LISTED"}).toArray();
+    let rlist = await db.collection("rental_listings").find({owner: req.params.userAdd, status: "LISTED"}).toArray();
+   
+    for (i in slist) {
+      let token = await db.collection("nft_details").findOne({coll_addr: slist[i].nftAddress, token_id:slist[i].tokenId});
+      slist[i].imgUri = token.uri
+    //   console.log(slist[i])
+      output.push(slist[i])
+    }
+
+    for (i in rlist) {
+        let rtoken = await db.collection("nft_details").findOne({coll_addr: rlist[i].nftContract, token_id:rlist[i].tokenId});
+        rlist[i].imgUri = rtoken.uri
+        // console.log(rlist[i])
+        output.push(rlist[i])
+    }
+    res.send(output).status(200)
+}
+
 const getCollections = async (req, res) => {
     const db = dbo.getDb();
     let collections = await db.collection("collections").find({createdBy: req.params.userAdd}).toArray();
@@ -55,5 +78,6 @@ module.exports = {
     getOwned, 
     getCollected, 
     getRented,
-    getCollections
+    getCollections,
+    getListed
 }

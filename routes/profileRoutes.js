@@ -3,7 +3,7 @@ const router = express.Router();
 
 const dbo = require("../database/conn");
 
-const { getOwned, getCollected, getRented, getCollections} = require('../controller/profileController');
+const { getOwned, getCollected, getRented, getCollections, getListed} = require('../controller/profileController');
 
 /**
  * @swagger
@@ -51,7 +51,7 @@ router.get('/collections/:userAdd',  getCollections);
  *     summary: Retrieve a list of NFTS listed on the marketplace
  *     tags: [Profile]
 */
-router.get('/listed/:userAdd',  getRented);
+router.get('/listed/:userAdd',  getListed);
 
 /**
  * @swagger
