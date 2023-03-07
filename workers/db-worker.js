@@ -42,6 +42,8 @@ async function reader(){
             }
             if (currentItem.event == "ItemBought") {
                 console.log("Processing ItemBought Event")
+                console.log(currentItem.data)
+                console.log("............................")
                 await itemBoughtEvent(currentItem.data)
             }
             if (currentItem.event == "NFTListed") {
@@ -55,6 +57,8 @@ async function reader(){
             }
             if (currentItem.event == "NFTRented") {
                 console.log("Processing NFTRented Event")
+                console.log(currentItem.data)
+                console.log("............................")
                 await nftRentedEvent(currentItem.data)
             }
         }else{

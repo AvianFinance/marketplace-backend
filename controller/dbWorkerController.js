@@ -126,12 +126,12 @@ async function itemListedEvent(data) {
 async function itemBoughtEvent(data) {
     console.log(data)
 
-    const query = { nftAddress: data.nftAddress,tokenId: data.tokenId,status: "LISTED" };
+    const query = { nftAddress: data.nftAddress, tokenId: parseInt(data.tokenId._hex), status: "LISTED" };
     const updates = {
       $set: {status: "SOLD", buyer: data.buyer}
     };
 
-    const query1 = { coll_addr: data.nftAddress, token_id: data.tokenId };
+    const query1 = { coll_addr: data.nftAddress, token_id: parseInt(data.tokenId._hex) };
     const updates1 = {
       $set: {owner: data.buyer}
     };
@@ -195,12 +195,12 @@ async function nftListedEvent(data) {
 async function nftRentedEvent(data) {
     console.log(data)
 
-    const query = { nftContract: data.nftContract,tokenId: data.tokenId,status: "LISTED" };
+    const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), status: "LISTED" };
     const updates = {
       $set: {status: "RENTED", user: data.user, expires: data.expires}
     };
 
-    const query1 = { coll_addr: data.nftContract, token_id: data.tokenId };
+    const query1 = { coll_addr: data.nftContract, token_id: parseInt(data.tokenId._hex) };
     const updates1 = {
       $set: {user: data.user, expiry: data.expires}
     };
