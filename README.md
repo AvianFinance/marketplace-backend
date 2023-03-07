@@ -62,6 +62,7 @@ Response
 - GET -  /api/profile/collected/:userAdd - collected nfts
 - GET -  /api/profile/owned/:userAdd  - owned nfts
 - GET -  /api/profile/collections/:userAdd  - collections 
+- GET -  /api/profile/listed/:userAdd  - collections 
 
 ### Mint Routes
 
