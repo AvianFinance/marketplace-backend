@@ -158,7 +158,7 @@ async function itemBoughtEvent(data) {
 
 // @desc Get single user
 async function nftListedEvent(data) {
-    console.log(data)
+    //console.log(data)
 
     // const priceS = ( parseInt(data.price._hex, 16) * 10 ** -18 ).toString()
     // console.log(priceS)
@@ -167,7 +167,7 @@ async function nftListedEvent(data) {
         owner: data.owner,
         user: data.user,
         nftContract: data.nftContract, 
-        tokenId: data.tokenId, 
+        tokenId: parseInt(data.tokenId._hex), 
         pricePerDay: data.pricePerDay, 
         startDateUNIX: data.startDateUNIX, 
         endDateUNIX: data.endDateUNIX, 
@@ -177,10 +177,11 @@ async function nftListedEvent(data) {
         modifiedAt: new Date(),
     };
 
+    console.log(document)
     try {
         await client.connect();
         const collection = client.db("AVFX_Events").collection("rental_listings");
-        const result = await db.collection.insertOne(document);
+        const result = await collection.insertOne(document);
         console.log(`A document was inserted with the _id: ${result.insertedId}`,);
     } catch(e) {
         console.log("Error inserting data!")

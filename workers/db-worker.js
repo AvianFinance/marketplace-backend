@@ -46,6 +46,8 @@ async function reader(){
             }
             if (currentItem.event == "NFTListed") {
                 console.log("Processing NFTListed Event")
+                console.log(currentItem.data)
+                console.log("............................")
                 await nftListedEvent(currentItem.data)
             }
             if (currentItem.event == "NFTUnlisted") {

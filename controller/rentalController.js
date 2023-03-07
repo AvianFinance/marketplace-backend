@@ -45,7 +45,7 @@ const getRentalCollectionTokens = async (req, res) => {
     const token_address = req.params.collectionId
 
     const tx = await m_contract.getRListedAdddressTokens(token_address);
-    console.log(tx)
+    // console.log(tx)
 
     const db = dbo.getDb();
     let collection = await db.collection("nft_details");
