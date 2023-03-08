@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser")
 const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
+const config = require("./config/app-config")
 
 const dbo = require("./database/conn");
 const rentalRoutes = require('./routes/rentalRoute');
@@ -60,7 +61,7 @@ app.get('/', (req,res) => {
 const {Worker} = require("worker_threads");
 const worker = new Worker("./workers/index",{workerData: "Main listner"});
 
-const PORT = process.env.PORT || 8080;
+const PORT = config.port || 8080;
 dbo.connectToServer(function (err) {
   if (err) {
     console.error(err);

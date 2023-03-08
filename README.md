@@ -1,3 +1,18 @@
+# NFT Marketplace Backend API
+
+## How to run
+
+1. npm install
+2. Create a .env file at the working directory
+```
+    MONGODB_CONNECTION_STRING=XXXX
+    PORT=XXXX
+    AMPLACE_TOKEN = XXXX
+    RIME_TOKEN  = XXXX
+    RIME_RENT = XXXX
+```
+3. npm start
+
 ## Routes
 
 ### User Routes
