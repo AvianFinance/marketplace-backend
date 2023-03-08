@@ -1,5 +1,5 @@
 const dbo = require('../database/conn')
-const mplace_contract = require('../config/contract')
+const mplace_contract = require('../services/contract_create')
 const { sendMetadata } = require('../services/pinata_upload')
 const { getTokenCounter, getTokenType } = require('../services/token_counter')
 const FormData = require('form-data');

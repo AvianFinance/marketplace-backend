@@ -1,5 +1,6 @@
 const { ethers } = require("hardhat")
-const { amplace_token } = require('../config')
+const config = require('../config/app-config')
+const amplace_token  = config.amplace_token
 const fs = require('fs');
 const Marketplace = JSON.parse(fs.readFileSync('./artifacts/contracts/AvianMarkett.sol/AvianMarkett.json', 'utf-8'));
 

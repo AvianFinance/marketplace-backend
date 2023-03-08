@@ -1,6 +1,7 @@
 const { MongoClient } = require("mongodb");
-// const connectionString = process.env.MONGODB_CONNECTION_STRING;
-const connectionString = "mongodb+srv://avfx_root:irmiot4462281@avianfinance.qc7bqtj.mongodb.net/?retryWrites=true&w=majority"
+const config = require('../config/app-config')
+const connectionString = config.db_connection
+
 const client = new MongoClient(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

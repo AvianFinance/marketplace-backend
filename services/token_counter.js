@@ -1,6 +1,6 @@
 const { ethers } = require("hardhat")
 const fs = require('fs');
-const mplace_contract = require('../config/contract')
+const mplace_contract = require('../services/contract_create')
 
 async function getTokenCounter(token_address) {
 
