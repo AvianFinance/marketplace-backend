@@ -1,5 +1,5 @@
 const dbo = require('../database/conn')
-const mplace_contract = require('../config/contract')
+const mplace_contract = require('../services/contract_create')
 const collectionName = "collections"
 const {getUserNameByAddress} = require('./userController')
 
