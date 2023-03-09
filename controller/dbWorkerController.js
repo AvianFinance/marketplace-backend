@@ -34,6 +34,10 @@ async function itemListedEvent(data) {
         const result1 = await collection1.updateOne(query, updates);
         console.log(result1)
 
+        const collection2 = client.db("AVFX_Events").collection("market_events");
+        const result2 = await collection2.insertOne(document);
+        console.log(`A document was inserted with the _id: ${result2.insertedId}`,);
+
     } catch(e) {
         console.log("Error inserting data")
         console.log(e)
@@ -44,29 +48,39 @@ async function itemListedEvent(data) {
 
 // @desc Get single user
 async function itemBoughtEvent(data) {
-    console.log(data)
+ 
+    const document = {
+        nftAddress: data.nftAddress,
+        tokenId: parseInt(data.tokenId._hex),
+        price : data.price,
+        buyer: data.buyer,
+        status: "BOUGHT",                                      
+        createdAt: new Date(),
+        modifiedAt: new Date(),
+    };
+    console.log(document)
 
     const query = { nftAddress: data.nftAddress, tokenId: parseInt(data.tokenId._hex), status: "LISTED" };
-    const updates = {
-      $set: {status: "SOLD", buyer: data.buyer}
-    };
-
+    
     const query1 = { coll_addr: data.nftAddress, token_id: parseInt(data.tokenId._hex) };
     const updates1 = {
-      $set: {owner: data.buyer}
+      $set: {owner: data.buyer, listed_status: false}
     };
 
     try {
         await client.connect();
+
         const collection = client.db("AVFX_Events").collection("sell_listings");
-        const result = await collection.updateOne(query, updates);
-        console.log(`A document updated with the _id: ${result.upsertedId}`);
-        console.log(result)
+        const result = await collection.deleteOne(query)
+        console.log("Document deletion successful")
 
         const collection1 = client.db("AVFX_Events").collection("nft_details");
         const result1 = await collection1.updateOne(query1, updates1);
-        console.log(`A document updated with the _id: ${result1.upsertedId}`);
         console.log(result1)
+
+        const collection2 = client.db("AVFX_Events").collection("market_events");
+        const result2 = await collection2.insertOne(document);
+        console.log(`A document was inserted with the _id: ${result2.insertedId}`,);
   
     } catch(e) {
         console.log("Error Updating database!")
@@ -113,6 +127,10 @@ async function nftListedEvent(data) {
         const result1 = await collection1.updateOne(query, updates);
         console.log(result1)
 
+        const collection2 = client.db("AVFX_Events").collection("market_events");
+        const result2 = await collection2.insertOne(document);
+        console.log(`A document was inserted with the _id: ${result2.insertedId}`);
+
     } catch(e) {
         console.log("Error inserting data!")
         console.log(e)
@@ -123,29 +141,41 @@ async function nftListedEvent(data) {
 
 // @desc Get single user
 async function nftRentedEvent(data) {
-    console.log(data)
+    const document = {
+        owner: data.owner,
+        user: data.user,
+        nftContract: data.nftContract, 
+        tokenId: parseInt(data.tokenId._hex), 
+        rentalFee: data.renatlFee, 
+        startDateUNIX: data.startDateUNIX, 
+        endDateUNIX: data.endDateUNIX, 
+        expires: data.expires,
+        status: "RENTED",
+        createdAt: new Date(),
+        modifiedAt: new Date(),
+    };
+    console.log(document)
 
     const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), status: "LISTED" };
-    const updates = {
-      $set: {status: "RENTED", user: data.user, expires: data.expires}
-    };
 
     const query1 = { coll_addr: data.nftContract, token_id: parseInt(data.tokenId._hex) };
     const updates1 = {
-      $set: {user: data.user, expiry: data.expires}
+      $set: {user: data.user, expiry: data.expires, listed_status }
     };
 
     try {
         await client.connect();
         const collection = client.db("AVFX_Events").collection("rental_listings");
-        const result = await collection.updateOne(query, updates);
-        console.log(`A document updated with the _id: ${result.upsertedId}`);
-        console.log(result)
+        const result = await collection.deleteOne(query)
+        console.log("Document deletion successful")
 
         const collection1 = client.db("AVFX_Events").collection("nft_details");
         const result1 = await collection1.updateOne(query1, updates1);
-        console.log(`A document updated with the _id: ${result1.upsertedId}`);
         console.log(result1)
+
+        const collection2 = client.db("AVFX_Events").collection("market_events");
+        const result2 = await collection2.insertOne(document);
+        console.log(`A document was inserted with the _id: ${result2.insertedId}`);
   
     } catch(e) {
         console.log("Error Updating database!")
@@ -156,10 +186,6 @@ async function nftRentedEvent(data) {
 }
 
 module.exports = { 
-    createSellListing,
-    itemBought,
-    nftRented,
-    nftListed,
     itemBoughtEvent,
     itemListedEvent,
     nftListedEvent,
