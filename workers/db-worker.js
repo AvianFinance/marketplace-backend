@@ -6,16 +6,16 @@ const uri ="mongodb+srv://avfx_root:irmiot4462281@avianfinance.qc7bqtj.mongodb.n
 
 const client = new MongoClient(uri);
 
-async function insert(coll_name,doc) {
-    try {
-        await client.connect();
-        const collection = client.db("AVFX_Events").collection(coll_name);
-        const result = await collection.insertOne(doc);
-        console.log(`A document was inserted with the _id: ${result.insertedId}`,);
-    } finally {
-        await client.close();
-    }
-}
+// async function insert(coll_name,doc) {
+//     try {
+//         await client.connect();
+//         const collection = client.db("AVFX_Events").collection(coll_name);
+//         const result = await collection.insertOne(doc);
+//         console.log(`A document was inserted with the _id: ${result.insertedId}`,);
+//     } finally {
+//         await client.close();
+//     }
+// }
 
 const data_queue = [];
 
@@ -35,6 +35,8 @@ async function reader(){
 
             if (currentItem.event == "ItemListed") {
                 console.log("Processing ItemListed Event")
+                console.log(currentItem.data)
+                console.log("............................")
                 await itemListedEvent(currentItem.data)
             }
             if (currentItem.event == "ItemCanceled") {

@@ -34,22 +34,16 @@ const getListed = async (req, res) => {
    
     for (i in slist) {
       let token = await db.collection("nft_details").findOne({coll_addr: slist[i].nftAddress, token_id:slist[i].tokenId});
-      console.log(token)
-      console.log(token.uri)
-      console.log(slist)
       let obj = slist[i]
       obj["imgUri"] = token.uri
-      // slist[i].imgUri = token.uri
-    //   console.log(slist[i])
       output.push(obj)
     }
 
     for (i in rlist) {
         let rtoken = await db.collection("nft_details").findOne({coll_addr: rlist[i].nftContract, token_id:rlist[i].tokenId});
-        let obj = rtoken[i]
-        obj["imgUri"] = token.uri
-        // console.log(rlist[i])
-        output.push(rlist[i])
+        let robj = rtoken[i]
+        robj["imgUri"] = rtoken.uri
+        output.push(robj)
     }
     res.send(output).status(200)
 }
