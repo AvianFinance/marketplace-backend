@@ -1,7 +1,7 @@
 const dbo = require('../database/conn')
 const mplace_contract = require('../services/contract_create')
 const collectionName = "collections"
-const {getUserNameByAddress} = require('./userController')
+const { getUserByAddress } = require('./userController')
 
 // @desc Get the rentals
 // @route GET /api/buy/explore
@@ -18,8 +18,9 @@ const getBuyCollections = async (req, res) => {
     for (i in tx) {
       let query = { _id: tx[i]};
       let result = await collection.findOne(query);
-      let userName = await getUserNameByAddress(result.createdBy)
-      result.createdUserName = userName
+      let user = await getUserByAddress(result.createdBy)
+      result.createdUserName = user.name
+      result.createdUserImage = user.profileImage
 
       let tokensList = await db.collection("nft_details").find({coll_addr: tx[i]}).toArray();
 
