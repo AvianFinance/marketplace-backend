@@ -12,6 +12,7 @@ const userRoutes = require("./routes/userRoutes")
 const collectionRoutes = require("./routes/collectionRoute")
 const mintRoutes = require("./routes/mintRoute")
 const profileRoutes = require("./routes/profileRoutes")
+const assetRoutes = require("./routes/assetRoutes")
 
 const app = express()
 app.use(cors());
@@ -51,6 +52,7 @@ app.use('/api/buy', buyRoutes);
 app.use('/api/collection', collectionRoutes);
 app.use('/api/mint', mintRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/assets', assetRoutes);
 
 //Main Route
 app.get('/', (req,res) => {

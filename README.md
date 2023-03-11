@@ -103,4 +103,8 @@ FormData
 
 ```
 
+### Get NFT Details
+
+- GET - /api/assets/CollectionId/tokenId - Get details of one NFT
+    Eg - /api/assets/0x71146F50Cf97A5B2b8D66bc5bfF93b86Cd3FF1f1/1
 
