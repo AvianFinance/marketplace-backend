@@ -3,7 +3,7 @@ const router = express.Router();
 
 const dbo = require("../database/conn");
 
-const { getOwned, getCollected, getRented, getCollections, getListed} = require('../controller/profileController');
+const { getOwned, getCollected, getRented, getCollections, getListed } = require('../controller/profileController');
 
 /**
  * @swagger
@@ -15,7 +15,7 @@ const { getOwned, getCollected, getRented, getCollections, getListed} = require(
  *     summary: Retrieve a list of collected NFTS by user
  *     tags: [Profile]
 */
-router.get('/collected/:userAdd',  getCollected);
+router.get('/collected/:userAdd', getCollected);
 
 /**
  * @swagger
@@ -27,7 +27,7 @@ router.get('/collected/:userAdd',  getCollected);
  *     summary: Retrieve a list of owned NFTS by user
  *     tags: [Profile]
 */
-router.get('/owned/:userAdd',  getOwned);
+router.get('/owned/:userAdd', getOwned);
 
 /**
  * @swagger
@@ -39,7 +39,7 @@ router.get('/owned/:userAdd',  getOwned);
  *     summary: Retrieve a list of collections created by user
  *     tags: [Profile]
 */
-router.get('/collections/:userAdd',  getCollections);
+router.get('/collections/:userAdd', getCollections);
 
 /**
  * @swagger
@@ -51,7 +51,7 @@ router.get('/collections/:userAdd',  getCollections);
  *     summary: Retrieve a list of NFTS listed on the marketplace
  *     tags: [Profile]
 */
-router.get('/listed/:userAdd',  getListed);
+router.get('/listed/:userAdd', getListed);
 
 /**
  * @swagger
@@ -63,6 +63,6 @@ router.get('/listed/:userAdd',  getListed);
  *     summary: Retrieve a list of rented NFTS by user
  *     tags: [Profile]
 */
-router.get('/rented/:userAdd',  getRented);
+router.get('/rented/:userAdd', getRented);
 
 module.exports = router;

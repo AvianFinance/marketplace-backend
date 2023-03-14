@@ -61,7 +61,7 @@ const { getRentalCollections, getRentalCollectionTokens } = require('../controll
  */
 
 // returns all collections with 4 tokens with images
-router.get('/explore',  getRentalCollections);
+router.get('/explore', getRentalCollections);
 
 /**
  * @swagger
@@ -136,7 +136,7 @@ router.get('/explore',  getRentalCollections);
  */
 
 //returns details of all tokens inside the collection
-router.get('/explore/:collectionId',  getRentalCollectionTokens);  
+router.get('/explore/:collectionId', getRentalCollectionTokens);
 
 
 module.exports = router;

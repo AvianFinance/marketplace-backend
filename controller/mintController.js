@@ -13,18 +13,17 @@ const mintNFT = async (req, res) => {
     const nft_name = req.body.nftName
     const nft_desc = req.body.nftDescription
     const IPFSLink = req.body.uri
-    
+
     const tokenCounter = await getTokenCounter(token_address)
 
     const ipfsHash = await sendMetadata(IPFSLink, nft_name, nft_desc, tokenCounter)
     const token_type = await getTokenType(token_address)
-    console.log(ipfsHash)
-    res.send({ipfsHash,token_type, tokenCounter}).status(200);
+    res.send({ ipfsHash, token_type, tokenCounter }).status(200);
 }
 
 const saveMintNFT = async (req, res) => {
     const db = dbo.getDb();
-    let collectionType = await db.collection("collections").findOne({_id:req.body.coll_addr});
+    let collectionType = await db.collection("collections").findOne({ _id: req.body.coll_addr });
     let collection = await db.collection("nft_details");
     const nftDocument = {
         coll_addr: req.body.coll_addr,
@@ -40,12 +39,12 @@ const saveMintNFT = async (req, res) => {
         listed_status: false,
     };
     let create = await collection.insertOne(nftDocument);
-    let nftCreated = {_id: create.insertedId};
+    let nftCreated = { _id: create.insertedId };
     let nft = await collection.findOne(nftCreated);
     res.send(nft).status(201);
 }
 
-module.exports = { 
+module.exports = {
     mintNFT,
     saveMintNFT
 }

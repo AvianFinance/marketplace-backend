@@ -1,19 +1,20 @@
 const { ethers } = require("hardhat")
 const config = require('../config/app-config')
-const amplace_token  = config.amplace_token
+const amplace_token = config.amplace_token
 const fs = require('fs');
 const Marketplace = JSON.parse(fs.readFileSync('./artifacts/contracts/AvianMarkett.sol/AvianMarkett.json', 'utf-8'))
-const {parentPort, workerData} = require("worker_threads");
+const { parentPort, workerData } = require("worker_threads");
+const logger = require("../utils/logger")
 
-async function getTransfer(){
+async function getTransfer() {
 
     const provider = new ethers.providers.WebSocketProvider(`wss://api.avax-test.network/ext/bc/C/ws`);
 
     const mplace_contract = new ethers.Contract(amplace_token, Marketplace.abi, provider)
 
-    console.log("Listening to the blockchain.........")
+    logger.info("Listening to the blockchain.........")
 
-    mplace_contract.on("ItemListed", (seller, nftAddress, tokenId, price)=>{
+    mplace_contract.on("ItemListed", (seller, nftAddress, tokenId, price) => {
 
         let transferEvent = {
             seller: seller,
@@ -24,16 +25,16 @@ async function getTransfer(){
 
         let message = {
             event: "ItemListed",
-            data : transferEvent
+            data: transferEvent
         }
 
         parentPort.postMessage(message);
 
     })
 
-    mplace_contract.on("ItemCanceled", (seller, nftAddress, tokenId)=>{
+    mplace_contract.on("ItemCanceled", (seller, nftAddress, tokenId) => {
 
-        let transferEvent ={
+        let transferEvent = {
             seller: seller,
             nftAddress: nftAddress,
             tokenId: tokenId,
@@ -41,16 +42,16 @@ async function getTransfer(){
 
         let message = {
             event: "ItemCanceled",
-            data : transferEvent
+            data: transferEvent
         }
 
         parentPort.postMessage(message);
 
     })
 
-    mplace_contract.on("ItemBought", (buyer, nftAddress, tokenId, price)=>{
+    mplace_contract.on("ItemBought", (buyer, nftAddress, tokenId, price) => {
 
-        let transferEvent ={
+        let transferEvent = {
             buyer: buyer,
             nftAddress: nftAddress,
             tokenId: tokenId,
@@ -59,68 +60,68 @@ async function getTransfer(){
 
         let message = {
             event: "ItemBought",
-            data : transferEvent
+            data: transferEvent
         }
 
         parentPort.postMessage(message);
 
     })
 
-    mplace_contract.on("NFTListed", (owner, user, nftContract, tokenId, pricePerDay, startDateUNIX, endDateUNIX, expires)=>{
+    mplace_contract.on("NFTListed", (owner, user, nftContract, tokenId, pricePerDay, startDateUNIX, endDateUNIX, expires) => {
 
-        let transferEvent ={
+        let transferEvent = {
             owner: owner,
             user: user,
-            nftContract: nftContract, 
-            tokenId: tokenId, 
-            pricePerDay: pricePerDay, 
-            startDateUNIX: startDateUNIX, 
-            endDateUNIX: endDateUNIX, 
+            nftContract: nftContract,
+            tokenId: tokenId,
+            pricePerDay: pricePerDay,
+            startDateUNIX: startDateUNIX,
+            endDateUNIX: endDateUNIX,
             expires: expires,
         }
 
         let message = {
             event: "NFTListed",
-            data : transferEvent
+            data: transferEvent
         }
 
         parentPort.postMessage(message);
     })
 
-    mplace_contract.on("NFTRented", (owner, user, nftContract, tokenId, startDateUNIX, endDateUNIX, expires, rentalFee)=>{
+    mplace_contract.on("NFTRented", (owner, user, nftContract, tokenId, startDateUNIX, endDateUNIX, expires, rentalFee) => {
 
-        let transferEvent ={
+        let transferEvent = {
             owner: owner,
             user: user,
-            nftContract: nftContract, 
-            tokenId: tokenId, 
-            startDateUNIX: startDateUNIX, 
-            endDateUNIX: endDateUNIX, 
+            nftContract: nftContract,
+            tokenId: tokenId,
+            startDateUNIX: startDateUNIX,
+            endDateUNIX: endDateUNIX,
             expires: expires,
-            rentalFee: rentalFee, 
+            rentalFee: rentalFee,
         }
 
         let message = {
             event: "NFTRented",
-            data : transferEvent
+            data: transferEvent
         }
 
         parentPort.postMessage(message);
 
     })
 
-    mplace_contract.on("NFTUnlisted", (unlistSender, nftContract, tokenId, refund)=>{
+    mplace_contract.on("NFTUnlisted", (unlistSender, nftContract, tokenId, refund) => {
 
-        let transferEvent ={
+        let transferEvent = {
             unlistSender: unlistSender,
             nftContract: nftContract,
-            tokenId: tokenId, 
-            refund: refund, 
+            tokenId: tokenId,
+            refund: refund,
         }
 
         let message = {
             event: "NFTUnlisted",
-            data : transferEvent
+            data: transferEvent
         }
 
         parentPort.postMessage(message);
