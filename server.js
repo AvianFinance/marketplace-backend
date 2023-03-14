@@ -4,6 +4,7 @@ const bodyParser = require("body-parser")
 const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
 const config = require("./config/app-config")
+const logger = require("./utils/logger")
 
 const dbo = require("./database/conn");
 const rentalRoutes = require('./routes/rentalRoute');
@@ -43,7 +44,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }))
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use( "/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //Middleware
 app.use('/api/rental', rentalRoutes);
@@ -55,13 +56,13 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/assets', assetRoutes);
 
 //Main Route
-app.get('/', (req,res) => {
-    res.send("We are online")
+app.get('/', (req, res) => {
+  res.send("We are online")
 })
 
 // Initial worker thread
-const {Worker} = require("worker_threads");
-const worker = new Worker("./workers/index",{workerData: "Main listner"});
+const { Worker } = require("worker_threads");
+const worker = new Worker("./workers/index", { workerData: "Main listner" });
 
 const PORT = config.port || 8080;
 dbo.connectToServer(function (err) {
@@ -72,6 +73,6 @@ dbo.connectToServer(function (err) {
 
   // start the Express server
   app.listen(PORT, () => {
-    console.log(`Server is running on port: ${PORT}`);
+    logger.info(`Server is running on port: ${PORT}`);
   });
 });

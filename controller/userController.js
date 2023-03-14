@@ -1,11 +1,12 @@
 const dbo = require("../database/conn");
+const logger = require("../utils/logger");
 
 // @desc Get single user
 // @route GET /api/user/:id"
 const getUserById = async (req, res) => {
     const db = dbo.getDb();
     let collection = await db.collection("users");
-    let query = {_id: req.params.id};
+    let query = { _id: req.params.id };
     let result = await collection.findOne(query);
     if (!result) res.send("Not found").status(404);
     else res.send(result).status(200);
@@ -16,10 +17,10 @@ const getUserById = async (req, res) => {
 const loggedUser = async (req, res) => {
     const db = dbo.getDb();
     let collection = await db.collection("users");
-    let query = {_id: req.params.id};
+    let query = { _id: req.params.id };
     let result = await collection.findOne(query);
-  
-    if (!result){
+
+    if (!result) {
         const userDocument = {
             _id: req.params.id,
             name: "Unknown",
@@ -32,12 +33,12 @@ const loggedUser = async (req, res) => {
             coverImage: "https://res.cloudinary.com/isuruieee/image/upload/v1676640391/WhatsApp_Image_2023-02-17_at_18.56.00_wjszpo.jpg",
             createdAt: new Date(),
             modifiedAt: new Date(),
-          };
+        };
         let create = await collection.insertOne(userDocument);
-        let userCreated = {_id: create.insertedId};
+        let userCreated = { _id: create.insertedId };
         let user = await collection.findOne(userCreated);
-        console.log("New user Created!")
-        console.log(user)
+        logger.info("New user Created!")
+        logger.info(user)
         res.send(user).status(201);
     } else {
         res.send(result).status(200);
@@ -49,26 +50,26 @@ const loggedUser = async (req, res) => {
 const updateUser = async (req, res) => {
     const db = dbo.getDb();
     const query = { _id: req.params.id };
-    console.log(req.body)
+    logger.info(req.body)
     const updates = {
-      $set: req.body
+        $set: req.body
     };
-    
+
     let collection = await db.collection("users");
     let result = await collection.updateOne(query, updates);
-    
+
     res.send(result).status(200);
 }
 
 async function getUserByAddress(userAdress) {
     const db = dbo.getDb();
     let collection = await db.collection("users");
-    let query = {_id: userAdress};
+    let query = { _id: userAdress };
     let result = await collection.findOne(query);
     return (result)
 }
 
-module.exports = { 
+module.exports = {
     getUserById,
     loggedUser,
     updateUser,

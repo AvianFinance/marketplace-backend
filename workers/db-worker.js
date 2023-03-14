@@ -1,6 +1,7 @@
 const { MongoClient } = require("mongodb");
 const {parentPort, workerData} = require("worker_threads");
 const { itemBoughtEvent, itemListedEvent, nftListedEvent, nftRentedEvent } = require('../controller/dbWorkerController')
+const logger = require("../utils/logger")
 
 const uri ="mongodb+srv://avfx_root:irmiot4462281@avianfinance.qc7bqtj.mongodb.net/?retryWrites=true&w=majority";
 
@@ -11,7 +12,7 @@ const client = new MongoClient(uri);
 //         await client.connect();
 //         const collection = client.db("AVFX_Events").collection(coll_name);
 //         const result = await collection.insertOne(doc);
-//         console.log(`A document was inserted with the _id: ${result.insertedId}`,);
+//         logger.info(`A document was inserted with the _id: ${result.insertedId}`,);
 //     } finally {
 //         await client.close();
 //     }
@@ -34,33 +35,33 @@ async function reader(){
             let currentItem = data_queue.shift()
 
             if (currentItem.event == "ItemListed") {
-                console.log("Processing ItemListed Event")
-                console.log(currentItem.data)
-                console.log("............................")
+                logger.info("Processing ItemListed Event")
+                logger.info(currentItem.data)
+                logger.info("............................")
                 await itemListedEvent(currentItem.data)
             }
             if (currentItem.event == "ItemCanceled") {
-                console.log("Processing ItemCanceled Event")
+                logger.info("Processing ItemCanceled Event")
             }
             if (currentItem.event == "ItemBought") {
-                console.log("Processing ItemBought Event")
-                console.log(currentItem.data)
-                console.log("............................")
+                logger.info("Processing ItemBought Event")
+                logger.info(currentItem.data)
+                logger.info("............................")
                 await itemBoughtEvent(currentItem.data)
             }
             if (currentItem.event == "NFTListed") {
-                console.log("Processing NFTListed Event")
-                console.log(currentItem.data)
-                console.log("............................")
+                logger.info("Processing NFTListed Event")
+                logger.info(currentItem.data)
+                logger.info("............................")
                 await nftListedEvent(currentItem.data)
             }
             if (currentItem.event == "NFTUnlisted") {
-                console.log("Processing NFTUnlisted Event")
+                logger.info("Processing NFTUnlisted Event")
             }
             if (currentItem.event == "NFTRented") {
-                console.log("Processing NFTRented Event")
-                console.log(currentItem.data)
-                console.log("............................")
+                logger.info("Processing NFTRented Event")
+                logger.info(currentItem.data)
+                logger.info("............................")
                 await nftRentedEvent(currentItem.data)
             }
         }else{

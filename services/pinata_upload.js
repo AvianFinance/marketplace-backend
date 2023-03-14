@@ -1,12 +1,13 @@
 const axios = require('axios');
 const FormData = require('form-data');
+const logger = require('../utils/logger');
 
 const API_KEY = "668b0b44d1e4a05bc600"
 const API_SECRET = "974f70a719445d92a968a34fc3dea98ad2a4064f4ef7e0c9283a7c1b29af8e71"
 
 
 async function uploadToPinata(formData, tokenId, nft_title, nft_desc) {
-    
+
     // the endpoint needed to upload the file
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`
     const response = await axios.post(
@@ -47,12 +48,12 @@ async function sendMetadata(IPFSHash, nft_title, nft_desc, tokenId) {
             }
         }
     ).catch(function (error) {
-        console.log(error.response.data.error)
+        logger.info(error.response.data.error)
     })
-    console.log(response.data.IpfsHash)
+    logger.info(response.data.IpfsHash)
     return {
-        "ipfsHash" : response.data.IpfsHash,
-        "imageUri" : `https://gateway.pinata.cloud/ipfs/${IPFSHash}`
+        "ipfsHash": response.data.IpfsHash,
+        "imageUri": `https://gateway.pinata.cloud/ipfs/${IPFSHash}`
     }
 }
 
