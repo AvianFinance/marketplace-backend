@@ -108,3 +108,10 @@ FormData
 - GET - /api/assets/CollectionId/tokenId - Get details of one NFT
     Eg - /api/assets/0x71146F50Cf97A5B2b8D66bc5bfF93b86Cd3FF1f1/1
 
+### Code Formatiing
+
+The code formatting is available in Visual Studio Code through the following shortcuts:
+
+On Windows Shift + Alt + F
+On Mac Shift + Option + F
+On Linux Ctrl + Shift + I
