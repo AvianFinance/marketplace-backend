@@ -1,10 +1,9 @@
 const express = require('express')
 const cors = require("cors");
 const bodyParser = require("body-parser")
-const swaggerJsdoc = require("swagger-jsdoc")
-const swaggerUi = require("swagger-ui-express")
 const config = require("./config/app-config")
 const logger = require("./utils/logger")
+const swaggerDoc = require("./config/swagger-config")
 
 const dbo = require("./database/conn");
 const rentalRoutes = require('./routes/rentalRoute');
@@ -19,32 +18,10 @@ const app = express()
 app.use(cors());
 app.use(express.json());
 
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Backend API",
-      version: "1.0.0",
-      description:
-        "NFT marketplace CRUD API application made with Express and documented with Swagger",
-    },
-    host: 'localhost:8080', // the host or url of the app
-    basePath: '/api', // the basepath of your endpoint
-    servers: [
-      {
-        url: "http://localhost:8080/api/",
-        description: "Local",
-      },
-    ],
-  },
-  apis: ["./routes/*.js"],
-};
-
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }))
 
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+swaggerDoc(app);
 
 //Middleware
 app.use('/api/rental', rentalRoutes);
