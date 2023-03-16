@@ -85,25 +85,58 @@ const getRentalCollections = async (req, res) => {
 // @route GET /api/rental/explore/:collectionID
 const getRentalCollectionTokens = async (req, res) => {
   const m_contract = mplace_contract.createABI();
+  const instm_contract = mplace_contract.createInsABI();
+
   const token_address = req.params.collectionId
+  try {
+    const r_tx = await m_contract.getRListedAdddressTokens(token_address);
+    const ins_tx = await instm_contract.getInsListedAdddressTokens(token_address);
 
-  const tx = await m_contract.getRListedAdddressTokens(token_address);
+    const db = dbo.getDb();
+    let collection = await db.collection("nft_details");
 
-  const db = dbo.getDb();
-  let collection = await db.collection("nft_details");
+    output = []
+    r_output = []
+    ins_output = []
 
-  let output = []
-  for (i in tx) {
-    let query = { coll_addr: token_address, token_id: tx[i].toNumber() }
-    let result = (await collection.find(query).toArray())[0];
-    const listing = await m_contract.getARListing(token_address, tx[i].toNumber());
-    result.pricePerDay = listing.pricePerDay
-    result.startDateUNIX = listing.startDateUNIX
-    result.endDateUNIX = listing.endDateUNIX
-    result.expires = listing.expires
-    output.push(result)
+    for (i in r_tx) {
+      let query = { coll_addr: token_address, token_id: r_tx[i].toNumber() }
+      let result = (await collection.find(query).toArray())[0];
+      if (result) {
+        const listing = await m_contract.getARListing(token_address, r_tx[i].toNumber());
+        result.pricePerDay = listing.pricePerDay
+        result.startDateUNIX = listing.startDateUNIX
+        result.endDateUNIX = listing.endDateUNIX
+        result.expires = listing.expires
+        result.type = "UPRIGHT"
+        r_output.push(result)
+      } else {
+        logger.info(`Details of token ${r_tx[i]} is not in the database`)
+      }
+    }
+
+    for (i in ins_tx) {
+      let query = { coll_addr: token_address, token_id: ins_tx[i].toNumber() }
+      let result = (await collection.find(query).toArray())[0];
+      if (result) {
+        const listing = await instm_contract.getAInsListing(token_address, ins_tx[i].toNumber());
+        result.pricePerDay = listing.pricePerDay
+        result.installmentCount = listing.installmentCount
+        result.installmentIndex = listing.installmentIndex
+        result.expires = listing.expires
+        result.paidIns = listing.paidIns
+        result.type = "INST"
+        ins_output.push(result)
+      } else {
+        logger.info(`Details of token ${ins_tx[i]} is not in the database`)
+      }
+    }
+    output = { upright: r_output, inst: ins_output }
+    res.send(output).status(200);
+  } catch (err) {
+    logger.error("Invalid Contract address")
+    res.status(500).send({ message: 'Invalid contract address!'});
   }
-  res.send(output).status(200);
 }
 
 module.exports = {
