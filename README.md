@@ -10,6 +10,7 @@
     AMPLACE_TOKEN = XXXX
     RIME_TOKEN  = XXXX
     RIME_RENT = XXXX
+    INSMPLACE_TOKEN  = XXX
 ```
 3. npm start
 
