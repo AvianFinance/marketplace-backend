@@ -1,4 +1,5 @@
 const dbo = require("../database/conn");
+const logger = require("../utils/logger")
 
 const getOwned = async (req, res) => {
     const db = dbo.getDb();
@@ -20,9 +21,27 @@ const getCollected = async (req, res) => {
 }
 
 const getRented = async (req, res) => {
-    // const db = dbo.getDb();
-    // let collection = await db.collection("users");
-   
+    const db = dbo.getDb();
+    let query = { token_type: "ERC4907", user : req.params.userAdd, expiry: {$ne : 0}}
+    try {
+        let output = []
+        let result = await db.collection("nft_details").find(query).toArray();
+        if (result) {
+            for (i in result) {
+                let expires = parseInt(result[i].expiry._hex)
+                let now = Date.now()/1000
+                if (expires > now) {
+                    output.push(result[i])
+                }
+            }
+        }
+        logger.info(JSON.stringify(output))
+        res.send(output).status(200);
+    } catch(err) {
+        logger.error(err)
+        res.send({"error" : "true"})
+    }
+    
 }
 
 const getListed = async (req, res) => {
@@ -70,8 +89,27 @@ const getCollections = async (req, res) => {
     res.send(collections).status(200)
 }
 
-async function getUserNameByAddress(userAdress) {
-  
+const getLended = async (req, res) => {
+    const db = dbo.getDb();
+    let query = { token_type: "ERC4907", owner : req.params.userAdd, expiry: {$ne : 0}}
+    try {
+        let output = []
+        let result = await db.collection("nft_details").find(query).toArray();
+        if (result) {
+            for (i in result) {
+                let expires = parseInt(result[i].expiry._hex)
+                let now = Date.now()/1000
+                if (expires > now) {
+                    output.push(result[i])
+                }
+            }
+        }
+        logger.info(JSON.stringify(output))
+        res.send(output).status(200);
+    } catch(err) {
+        logger.error(err)
+        res.send({"error" : "true"})
+    }
 }
 
 module.exports = { 
@@ -79,5 +117,6 @@ module.exports = {
     getCollected, 
     getRented,
     getCollections,
-    getListed
+    getListed,
+    getLended
 }
