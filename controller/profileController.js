@@ -46,25 +46,33 @@ const getRented = async (req, res) => {
 
 const getListed = async (req, res) => {
     const db = dbo.getDb();
-    let output = []
-
-    let slist = await db.collection("sell_listings").find({seller: req.params.userAdd, status: "LISTED"}).toArray();
-    let rlist = await db.collection("rental_listings").find({owner: req.params.userAdd, status: "LISTED"}).toArray();
+    let query = { owner : req.params.userAdd, listed_status: true}
+    try {
+        let listed = await db.collection("nft_details").find(query).toArray();
+        console.log(listed)
+        res.send(listed).status(200);
+    } catch (err) {
+        console.log(err)
+    }
+    // let output = []
+    // let slist = await db.collection("sell_listings").find({seller: req.params.userAdd, status: "LISTED"}).toArray();
+    // console.log(slist)
+    // let rlist = await db.collection("rental_listings").find({owner: req.params.userAdd, status: "LISTED"}).toArray();
+    // console.log(rlist)
    
-    for (i in slist) {
-      let token = await db.collection("nft_details").findOne({coll_addr: slist[i].nftAddress, token_id:slist[i].tokenId});
-      let obj = slist[i]
-      obj["imgUri"] = token.uri
-      output.push(obj)
-    }
+    // for (i in slist) {
+    //   let token = await db.collection("nft_details").findOne({coll_addr: slist[i].nftAddress, token_id:slist[i].tokenId});
+    //   let obj = slist[i]
+    //   obj["imgUri"] = token.uri
+    //   output.push(obj)
+    // }
 
-    for (i in rlist) {
-        let rtoken = await db.collection("nft_details").findOne({coll_addr: rlist[i].nftContract, token_id:rlist[i].tokenId});
-        let robj = rtoken[i]
-        robj["imgUri"] = rtoken.uri
-        output.push(robj)
-    }
-    res.send(output).status(200)
+    // for (i in rlist) {
+    //     let rtoken = await db.collection("nft_details").findOne({coll_addr: rlist[i].nftContract, token_id:rlist[i].tokenId});
+    //     let robj = rtoken[i]
+    //     robj["imgUri"] = rtoken.uri
+    //     output.push(robj)
+    // }
 }
 
 const getCollections = async (req, res) => {
