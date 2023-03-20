@@ -4,38 +4,17 @@ const bodyParser = require("body-parser")
 const config = require("./config/app-config")
 const logger = require("./utils/logger")
 const swaggerDoc = require("./config/swagger-config")
-
+const routes = require('./routes');
 const dbo = require("./database/conn");
-const rentalRoutes = require('./routes/rentalRoute');
-const buyRoutes = require('./routes/buyRoute')
-const userRoutes = require("./routes/userRoutes")
-const collectionRoutes = require("./routes/collectionRoute")
-const mintRoutes = require("./routes/mintRoute")
-const profileRoutes = require("./routes/profileRoutes")
-const assetRoutes = require("./routes/assetRoutes")
 
 const app = express()
 app.use(cors());
 app.use(express.json());
-
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }))
 
 swaggerDoc(app);
-
-//Middleware
-app.use('/api/rental', rentalRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/buy', buyRoutes);
-app.use('/api/collection', collectionRoutes);
-app.use('/api/mint', mintRoutes);
-app.use('/api/profile', profileRoutes);
-app.use('/api/assets', assetRoutes);
-
-//Main Route
-app.get('/', (req, res) => {
-  res.send("We are online")
-})
+routes.endPointsHandler(app);
 
 // Initial worker thread
 const { Worker } = require("worker_threads");
