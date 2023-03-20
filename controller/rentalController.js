@@ -14,9 +14,9 @@ const getRentalCollections = async (req, res) => {
   let collection = await db.collection(collectionName);
 
   const r_tx = await m_contract.getRListedAdddresses() // Gives all the token addresses listed for renting
-  logger.info(r_tx)
+  logger.info(`Rental list ${r_tx}`)
   const ins_tx = await instm_contract.getInsListedAdddresses() // Gives all the token addresses listed for installement renting
-  logger.info(ins_tx)
+  logger.info(`Installement Rental list ${ins_tx}`)
 
   output = []
   r_output = []

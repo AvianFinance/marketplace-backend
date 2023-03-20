@@ -3,7 +3,7 @@ const router = express.Router();
 
 const dbo = require("../database/conn");
 
-const { getOwned, getCollected, getRented, getCollections, getListed } = require('../controller/profileController');
+const { getOwned, getCollected, getRented, getCollections, getListed, getLended } = require('../controller/profileController');
 
 /**
  * @swagger
@@ -64,5 +64,17 @@ router.get('/listed/:userAdd', getListed);
  *     tags: [Profile]
 */
 router.get('/rented/:userAdd', getRented);
+
+/**
+ * @swagger
+ *  tags:
+ *   name: Profile
+ *   description: Managing user profile 
+ * /profile/collected:
+ *   get:
+ *     summary: Retrieve a list of rented NFTS by user
+ *     tags: [Profile]
+*/
+router.get('/lended/:userAdd', getLended);
 
 module.exports = router;

@@ -92,7 +92,6 @@ async function itemBoughtEvent(data) {
 
 async function nftListedEvent(data) {
     //logger.info(data)
-
     // const priceS = ( parseInt(data.price._hex, 16) * 10 ** -18 ).toString()
     // logger.info(priceS)
 
@@ -110,9 +109,9 @@ async function nftListedEvent(data) {
         createdAt: new Date(),
         modifiedAt: new Date(),
     };
-    logger.info(document)
+    logger.info(JSON.stringify(document))
 
-    const query = { coll_addr: data.nftAddress, token_id: parseInt(data.tokenId._hex) };
+    const query = { coll_addr: data.nftContract, token_id: parseInt(data.tokenId._hex) };
     const updates = {
         $set: { listed_status: true }
     };
@@ -125,7 +124,7 @@ async function nftListedEvent(data) {
 
         const collection1 = client.db("AVFX_Events").collection("nft_details");
         const result1 = await collection1.updateOne(query, updates);
-        logger.info(result1)
+        logger.info(JSON.stringify(result1))
 
         const collection2 = client.db("AVFX_Events").collection("market_events");
         const result2 = await collection2.insertOne(document);
@@ -153,13 +152,13 @@ async function nftRentedEvent(data) {
         createdAt: new Date(),
         modifiedAt: new Date(),
     };
-    logger.info(document)
+    logger.info(JSON.stringify(document))
 
     const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), status: "LISTED" };
 
     const query1 = { coll_addr: data.nftContract, token_id: parseInt(data.tokenId._hex) };
     const updates1 = {
-        $set: { user: data.user, expiry: data.expires, listed_status }
+        $set: { user: data.user, expiry: data.expires, listed_status: false }
     };
 
     try {
