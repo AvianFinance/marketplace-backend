@@ -6,6 +6,7 @@ const logger = require("./utils/logger")
 const swaggerDoc = require("./config/swagger-config")
 const routes = require('./routes');
 const dbo = require("./database/conn");
+const errorHandler = require("./utils/errorHandler")
 
 const app = express()
 app.use(cors());
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }))
 
 swaggerDoc(app);
 routes.endPointsHandler(app);
+app.use(errorHandler);
 
 // Initial worker thread
 const { Worker } = require("worker_threads");
