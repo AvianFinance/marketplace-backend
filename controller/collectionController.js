@@ -28,7 +28,7 @@ const createCollection = async (req, res, next) => {
 
 // @desc Get a collection by user Address
 // @route GET /api/collection/:userAddress
-const getCollectionByID = async (req, res) => {
+const getCollectionByID = async (req, res, next) => {
    const db = dbo.getDb();
    let query = { createdBy: req.params.userAddress };
 
