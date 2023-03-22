@@ -36,9 +36,11 @@ const saveMintNFT = async (req, res, next) => {
             token_type: collectionType.tokenType,
             owner: req.body.minter,
             minter: req.body.minter,
-            expiry: 0000,
+            expiry: 0,
             user: req.body.minter,
-            listed_status: false,
+            sell_listed_status: false,
+            rent_listed_status: false,
+            inst_listed_status: false,
         };
 
         let create = await db.collection("nft_details").insertOne(nftDocument);

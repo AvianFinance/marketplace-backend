@@ -1,0 +1,9 @@
+
+use('AVFX_Events');
+
+db.nft_details.updateMany( {}, { $rename: { "listed_status": "sell_listed_status" } } )
+
+
+
+
+
