@@ -1,47 +1,45 @@
 const dbo = require('../database/conn')
-const mplace_contract = require('../services/contract_create')
-const collectionName = "collections"
 const logger = require("../utils/logger")
 
-// @desc Get the rentals
-// @route GET /api/collection/
-const createCollection = async (req, res) => {
+// @desc Create a new collection
+// @route POST /api/collection
+const createCollection = async (req, res, next) => {
    const db = dbo.getDb();
-   let collection = await db.collection(collectionName);
    const collectionDocument = {
       _id: req.body.address,
       name: req.body.name,
       symbol: req.body.symbol,
       tokenType: req.body.tokenType,
       createdBy: req.body.createdBy,
+      coverImage: "https://res.cloudinary.com/isuruieee/image/upload/v1679563964/3_1_pnqx8w.png",
       createdAt: new Date(),
       modifiedAt: new Date()
    };
    try {
-      let create = await collection.insertOne(collectionDocument);
+      let create = await db.collection("collections").insertOne(collectionDocument);
       let collectionCreated = { _id: create.insertedId };
       let coll = await collection.findOne(collectionCreated);
       logger.info("New Collection Created!")
       res.send(coll).status(201);
-   } catch (e) {
-      logger.error(e);
-      res.send(e).status(500);
+   } catch (err) {
+      logger.error(err);
+      next({ status: 500, message: err.message })
    };
 }
 
-// @desc Get the collections
+// @desc Get a collection by user Address
 // @route GET /api/collection/:userAddress
-const getCollectionByID = async (req, res) => {
+const getCollectionByID = async (req, res, next) => {
    const db = dbo.getDb();
    let query = { createdBy: req.params.userAddress };
 
-   db.collection("collections").find(query).toArray(function (err, result) {
-      if (err) {
-         logger.error(e);
-         throw err;
-      }
+   try {
+      let result = await db.collection("collections").find(query).toArray();
       res.send(result).status(200)
-   })
+   } catch (err) {
+      logger.error(err);
+      next({ status: 500, message: err.message })
+   }
 }
 
 module.exports = {

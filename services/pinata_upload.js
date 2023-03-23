@@ -50,7 +50,7 @@ async function sendMetadata(IPFSHash, nft_title, nft_desc, tokenId) {
     ).catch(function (error) {
         logger.info(error.response.data.error)
     })
-    logger.info(response.data.IpfsHash)
+    logger.info(`IpfHash : ${response.data.IpfsHash}`)
     return {
         "ipfsHash": response.data.IpfsHash,
         "imageUri": `https://gateway.pinata.cloud/ipfs/${IPFSHash}`

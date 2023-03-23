@@ -17,7 +17,7 @@ module.exports = {
         return callback(err);
       }
 
-      dbConnection = db.db("AVFX_Events");
+      dbConnection = db.db(config.db_name);
       logger.info("Successfully connected to MongoDB Database");
 
       return callback();
