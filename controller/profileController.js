@@ -1,4 +1,5 @@
 const dbo = require("../database/conn");
+const logger = require("../utils/logger")
 
 const getOwned = async (req, res) => {
     const db = dbo.getDb();
@@ -20,32 +21,58 @@ const getCollected = async (req, res) => {
 }
 
 const getRented = async (req, res) => {
-    // const db = dbo.getDb();
-    // let collection = await db.collection("users");
-   
+    const db = dbo.getDb();
+    let query = { token_type: "ERC4907", user : req.params.userAdd, expiry: {$ne : 0}}
+    try {
+        let output = []
+        let result = await db.collection("nft_details").find(query).toArray();
+        if (result) {
+            for (i in result) {
+                let expires = parseInt(result[i].expiry._hex)
+                let now = Date.now()/1000
+                if (expires > now) {
+                    output.push(result[i])
+                }
+            }
+        }
+        logger.info(JSON.stringify(output))
+        res.send(output).status(200);
+    } catch(err) {
+        logger.error(err)
+        res.send({"error" : "true"})
+    }
+    
 }
 
 const getListed = async (req, res) => {
     const db = dbo.getDb();
-    let output = []
-
-    let slist = await db.collection("sell_listings").find({seller: req.params.userAdd, status: "LISTED"}).toArray();
-    let rlist = await db.collection("rental_listings").find({owner: req.params.userAdd, status: "LISTED"}).toArray();
+    let query = { owner : req.params.userAdd, listed_status: true}
+    try {
+        let listed = await db.collection("nft_details").find(query).toArray();
+        console.log(listed)
+        res.send(listed).status(200);
+    } catch (err) {
+        console.log(err)
+    }
+    // let output = []
+    // let slist = await db.collection("sell_listings").find({seller: req.params.userAdd, status: "LISTED"}).toArray();
+    // console.log(slist)
+    // let rlist = await db.collection("rental_listings").find({owner: req.params.userAdd, status: "LISTED"}).toArray();
+    // console.log(rlist)
    
-    for (i in slist) {
-      let token = await db.collection("nft_details").findOne({coll_addr: slist[i].nftAddress, token_id:slist[i].tokenId});
-      let obj = slist[i]
-      obj["imgUri"] = token.uri
-      output.push(obj)
-    }
+    // for (i in slist) {
+    //   let token = await db.collection("nft_details").findOne({coll_addr: slist[i].nftAddress, token_id:slist[i].tokenId});
+    //   let obj = slist[i]
+    //   obj["imgUri"] = token.uri
+    //   output.push(obj)
+    // }
 
-    for (i in rlist) {
-        let rtoken = await db.collection("nft_details").findOne({coll_addr: rlist[i].nftContract, token_id:rlist[i].tokenId});
-        let robj = rtoken[i]
-        robj["imgUri"] = rtoken.uri
-        output.push(robj)
-    }
-    res.send(output).status(200)
+    // for (i in rlist) {
+    //     let rtoken = await db.collection("nft_details").findOne({coll_addr: rlist[i].nftContract, token_id:rlist[i].tokenId});
+    //     let robj = rtoken[i]
+    //     robj["imgUri"] = rtoken.uri
+    //     output.push(robj)
+    // }
 }
 
 const getCollections = async (req, res) => {
@@ -70,8 +97,27 @@ const getCollections = async (req, res) => {
     res.send(collections).status(200)
 }
 
-async function getUserNameByAddress(userAdress) {
-  
+const getLended = async (req, res) => {
+    const db = dbo.getDb();
+    let query = { token_type: "ERC4907", owner : req.params.userAdd, expiry: {$ne : 0}}
+    try {
+        let output = []
+        let result = await db.collection("nft_details").find(query).toArray();
+        if (result) {
+            for (i in result) {
+                let expires = parseInt(result[i].expiry._hex)
+                let now = Date.now()/1000
+                if (expires > now) {
+                    output.push(result[i])
+                }
+            }
+        }
+        logger.info(JSON.stringify(output))
+        res.send(output).status(200);
+    } catch(err) {
+        logger.error(err)
+        res.send({"error" : "true"})
+    }
 }
 
 module.exports = { 
@@ -79,5 +125,6 @@ module.exports = {
     getCollected, 
     getRented,
     getCollections,
-    getListed
+    getListed,
+    getLended
 }

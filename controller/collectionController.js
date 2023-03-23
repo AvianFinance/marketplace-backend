@@ -36,7 +36,10 @@ const getCollectionByID = async (req, res) => {
    let query = { createdBy: req.params.userAddress };
 
    db.collection("collections").find(query).toArray(function (err, result) {
-      if (err) throw err;
+      if (err) {
+         logger.error(e);
+         throw err;
+      }
       res.send(result).status(200)
    })
 }

@@ -1,16 +1,21 @@
 const { ethers } = require("hardhat")
 const config = require('../config/app-config')
-const amplace_token = config.amplace_token
 const fs = require('fs');
-const Marketplace = JSON.parse(fs.readFileSync('./artifacts/contracts/AvianMarkett.sol/AvianMarkett.json', 'utf-8'))
 const { parentPort, workerData } = require("worker_threads");
 const logger = require("../utils/logger")
+
+const Marketplace = JSON.parse(fs.readFileSync('./artifacts/contracts/AvianMarkett.sol/AvianMarkett.json', 'utf-8'))
+const InstallmentMplace = JSON.parse(fs.readFileSync('./artifacts/contracts/AvianInstallment.sol/AvianInstallment.json', 'utf-8'))
+
+const amplace_token = config.amplace_token
+const insmplace_token = config.insmplace_token
 
 async function getTransfer() {
 
     const provider = new ethers.providers.WebSocketProvider(`wss://api.avax-test.network/ext/bc/C/ws`);
 
     const mplace_contract = new ethers.Contract(amplace_token, Marketplace.abi, provider)
+    const insmplace_contract = new ethers.Contract(insmplace_token, InstallmentMplace.abi, provider)
 
     logger.info("Listening to the blockchain.........")
 
@@ -126,6 +131,47 @@ async function getTransfer() {
 
         parentPort.postMessage(message);
 
+    })
+
+    insmplace_contract.on("INSNFTListed", (owner, user, nftContract, tokenId, pricePerDay) => {
+
+        let transferEvent = {
+            owner: owner,
+            user: user,
+            nftContract: nftContract,
+            tokenId: tokenId,
+            pricePerDay: pricePerDay,
+        }
+
+        let message = {
+            event: "INSNFTListed",
+            data: transferEvent
+        }
+
+        parentPort.postMessage(message);
+
+    })
+
+    insmplace_contract.on("NFTINSPaid", (owner, user, nftContract, tokenId, expires, ins_index, amountIns, paidIns) => {
+
+        let transferEvent = {
+            owner: owner,
+            user: user,
+            nftContract: nftContract,
+            tokenId: tokenId,
+            expires: expires,
+            ins_index: ins_index,
+            amountIns: amountIns,
+            paidIns: paidIns
+        }
+
+        let message = {
+            event: "NFTINSPaid",
+            data: transferEvent
+        }
+
+        parentPort.postMessage(message);
+        
     })
 }
 

@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 const {parentPort, workerData} = require("worker_threads");
-const { itemBoughtEvent, itemListedEvent, nftListedEvent, nftRentedEvent } = require('../controller/dbWorkerController')
+const { itemBoughtEvent, itemListedEvent, nftListedEvent, nftRentedEvent, insNftListedEvent, insNftPaidEvent } = require('../controller/dbWorkerController')
 const logger = require("../utils/logger")
 
 const uri ="mongodb+srv://avfx_root:irmiot4462281@avianfinance.qc7bqtj.mongodb.net/?retryWrites=true&w=majority";
@@ -63,6 +63,18 @@ async function reader(){
                 logger.info(currentItem.data)
                 logger.info("............................")
                 await nftRentedEvent(currentItem.data)
+            }
+            if (currentItem.event == "INSNFTListed") {
+                logger.info("Processing INSNFTListed Event")
+                logger.info(currentItem.data)
+                logger.info("............................")
+                await insNftListedEvent(currentItem.data)
+            }
+            if (currentItem.event == "NFTINSPaid") {
+                logger.info("Processing NFTINSPaid Event")
+                logger.info(currentItem.data)
+                logger.info("............................")
+                await insNftPaidEvent(currentItem.data)
             }
         }else{
             await delay(2000)
