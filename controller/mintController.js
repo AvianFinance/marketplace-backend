@@ -47,6 +47,8 @@ const saveMintNFT = async (req, res, next) => {
         let nftCreated = { _id: create.insertedId };
         let nft = await db.collection("nft_details").findOne(nftCreated);
         logger.info("NFT minted successfully")
+        nftDocument.event = "MINT"
+        let event = await db.collection("market_events").insertOne(nftDocument);
         res.send(nft).status(201);
     } catch (err) {
         logger.error(err);

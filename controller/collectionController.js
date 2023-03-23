@@ -11,6 +11,7 @@ const createCollection = async (req, res, next) => {
       symbol: req.body.symbol,
       tokenType: req.body.tokenType,
       createdBy: req.body.createdBy,
+      coverImage: "https://res.cloudinary.com/isuruieee/image/upload/v1679563964/3_1_pnqx8w.png",
       createdAt: new Date(),
       modifiedAt: new Date()
    };
