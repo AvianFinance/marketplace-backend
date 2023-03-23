@@ -2,6 +2,7 @@ const dbo = require('../database/conn')
 const mplace_contract = require('../services/contract_create')
 const collectionName = "collections"
 const { getUserByAddress } = require('./userController')
+const logger = require("../utils/logger")
 
 // @desc Get the rentals
 // @route GET /api/buy/explore
