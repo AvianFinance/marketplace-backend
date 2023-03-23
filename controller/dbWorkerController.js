@@ -147,7 +147,7 @@ async function nftRentedEvent(data) {
             user: data.user,
             nftContract: data.nftContract,
             tokenId: parseInt(data.tokenId._hex),
-            rentalFee: data.renatlFee,
+            rentalFee: data.rentalFee,
             expires: data.expires,
             event: "RENT",
             type: "UPRIGHT",
@@ -178,7 +178,7 @@ async function nftRentedEvent(data) {
 
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query1, updates1);
-        logger.info(result1)
+        logger.info(JSON.stringify(result1))
 
         const collection2 = client.db(db_name).collection("market_events");
         const result2 = await collection2.insertOne(document);
@@ -255,7 +255,7 @@ async function insNftPaidEvent(data) {
         };
         logger.info(`Document to be inserted : [${JSON.stringify(document)}]`)
 
-        const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), listed_status : true, inst_status: false};
+        const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), listed_status : true, inst_status: "LISTED"};
         const updates = {
             $set: { listed_status: false, inst_status: "PAYING" }
         };
@@ -277,7 +277,7 @@ async function insNftPaidEvent(data) {
 
             const collection1 = client.db(db_name).collection("nft_details");
             const result1 = await collection1.updateOne(query1, updates1);
-            logger.info(result1)
+            logger.info(JSON.stringify(result1))
 
             const collection2 = client.db(db_name).collection("market_events");
             const result2 = await collection2.insertOne(document);
@@ -295,7 +295,7 @@ async function insNftPaidEvent(data) {
         }
 
         //TODO: replace 5 with request data
-        if(data.data.ins_index == 5){
+        if(parseInt(data.ins_index._hex) == 5){
             const u_query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), inst_status: "PAYING"};
             const collection = client.db(db_name).collection("inst_listings").updateOne(u_query , {inst_status: "COMPLETED"});
         }
