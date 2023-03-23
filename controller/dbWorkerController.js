@@ -203,7 +203,7 @@ async function insNftListedEvent(data) {
             event: "LIST-INST",
             type: "INST",
             listed_status : true,
-            inst_status: false,
+            inst_status: "LISTED",
             createdAt: new Date(),
             modifiedAt: new Date(),
         };
@@ -237,12 +237,14 @@ async function insNftListedEvent(data) {
 
 async function insNftPaidEvent(data) {
     try {
+        //TODO: Get tot installement count from data
         const document = {
             owner: data.owner,
             user: data.user,
             nftContract: data.nftContract,
             tokenId: parseInt(data.tokenId._hex),
             expires: data.expires,
+            totInsCount: 5,
             ins_index: data.ins_index,
             amountIns: data.amountIns,
             paidIns: data.paidIns,
@@ -253,10 +255,9 @@ async function insNftPaidEvent(data) {
         };
         logger.info(`Document to be inserted : [${JSON.stringify(document)}]`)
 
-        // const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), event: "LIST-INST" };
         const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), listed_status : true, inst_status: false};
         const updates = {
-            $set: { listed_status: false, inst_status: true }
+            $set: { listed_status: false, inst_status: "PAYING" }
         };
 
         const query1 = { coll_addr: data.nftContract, token_id: parseInt(data.tokenId._hex) };
@@ -265,22 +266,10 @@ async function insNftPaidEvent(data) {
         };
         await client.connect();
         
-        // const collection = client.db(db_name).collection("inst_listings");
-        // const result = await collection.updateOne(query, updates);
-        // logger.info(JSON.stringify(result))
-
-        // const collection2 = client.db(db_name).collection("market_events");
-        // const result2 = await collection2.insertOne(document);
-        // logger.info(`A document was inserted with the _id: ${result2.insertedId}`);
-
         const installment = await client.db(db_name).collection("nft_details").findOne(query1);
         logger.info(JSON.stringify(installment));
 
         if (installment.inst_listed_status == true) {
-            // console.log("This is first installment pay")
-            // const collection = client.db(db_name).collection("inst_listings");
-            // const result = await collection.deleteOne(query)
-            // logger.info("Document deletion successful")
 
             const collection = client.db(db_name).collection("inst_listings");
             const result = await collection.updateOne(query, updates);
@@ -300,6 +289,15 @@ async function insNftPaidEvent(data) {
             const collection2 = client.db(db_name).collection("market_events");
             const result2 = await collection2.insertOne(document);
             logger.info(`A document was inserted with the _id: ${result2.insertedId}`);
+
+            const update = client.db(db_name).collection("nft_details").updateOne(query1, {expiry: data.expires})
+            logger.info(JSON.stringify(update))
+        }
+
+        //TODO: replace 5 with request data
+        if(data.data.ins_index == 5){
+            const u_query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), inst_status: "PAYING"};
+            const collection = client.db(db_name).collection("inst_listings").updateOne(u_query , {inst_status: "COMPLETED"});
         }
     } catch (e) {
         logger.info("Error Updating database!")

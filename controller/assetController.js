@@ -13,7 +13,6 @@ const getOneNft = async (req, res, next) => {
             nft_data.minterName = (await getUserByAddress(nft_data.minter)).name || "undefined"
             nft_data.ownerName = (await getUserByAddress(nft_data.owner)).name || "undefined"
             nft_data.userName = (await getUserByAddress(nft_data.user)).name || "undefined"
-            // console.log(nft_data)
 
             let collection_data = await db.collection("collections").findOne({ _id: req.params.collectionId });
 
@@ -29,9 +28,18 @@ const getOneNft = async (req, res, next) => {
                 if (rent_listed)  listings.push(rent_listed) ;
             }
             if(nft_data.inst_listed_status){
-                const i_query = { nftContract: req.params.collectionId, tokenId: parseInt(req.params.tokenId), listed_status : true, inst_status: false};
+                const i_query = { nftContract: req.params.collectionId, tokenId: parseInt(req.params.tokenId), listed_status : true, inst_status: "LISTED"};
                 let inst_listed = await db.collection("inst_listings").findOne(i_query);
                 if (inst_listed) listings.push(inst_listed);
+            }
+
+            let expires = parseInt(nft_data.expiry._hex)
+            let now = Date.now() / 1000
+
+            if(!nft_data.inst_listed_status && (expires > now)) {
+                const i_query = { nftContract: req.params.collectionId, tokenId: parseInt(req.params.tokenId), listed_status : false, inst_status: "PAYING"};
+                let installment = await db.collection("inst_listings").findOne(i_query);
+                if (installment) listings.push(installment);
             }
             let output = { nft: nft_data, collection: collection_data, listing : listings }
             res.send(output).status(200);
