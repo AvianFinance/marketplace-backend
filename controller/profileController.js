@@ -40,7 +40,7 @@ const getRented = async (req, res, next) => {
                 }
             }
         }
-        logger.info(JSON.stringify(output))
+        // logger.info(JSON.stringify(output))
         res.send(output).status(200);
     } catch (err) {
         logger.error(err);
@@ -99,7 +99,7 @@ const getLended = async (req, res, next) => {
                 }
             }
         }
-        logger.info(JSON.stringify(output))
+        // logger.info(JSON.stringify(output))
         res.send(output).status(200);
     } catch (err) {
         logger.error(err);
