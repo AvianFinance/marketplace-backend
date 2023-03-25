@@ -13,11 +13,11 @@ const getRentalCollections = async (req, res, next) => {
   
     const db = dbo.getDb();
     let collection = await db.collection(collectionName);
-  
+    logger.info(`Getting rental collection explore details..`)
     const r_tx = await m_contract.getRListedAdddresses() // Gives all the token addresses listed for renting
-    logger.info(`Rental list ${r_tx}`)
+    // logger.info(`Rental list ${r_tx}`)
     const ins_tx = await instm_contract.getInsListedAdddresses() // Gives all the token addresses listed for installement renting
-    logger.info(`Installement Rental list ${ins_tx}`)
+    // logger.info(`Installement Rental list ${ins_tx}`)
   
     output = []
     r_output = []
@@ -98,7 +98,7 @@ const getRentalCollectionTokens = async (req, res, next) => {
     const db = dbo.getDb();
     
     const token_address = req.params.collectionId
-
+    logger.info(`Getting rental tokens..`)
     const collection_data = await db.collection("collections").findOne({ _id: token_address })
     const r_tx = await m_contract.getRListedAdddressTokens(token_address);
     const ins_tx = await instm_contract.getInsListedAdddressTokens(token_address);

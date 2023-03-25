@@ -11,10 +11,15 @@ const getOneNft = async (req, res, next) => {
         
         if (nft_data) {
             nft_data.minterName = (await getUserByAddress(nft_data.minter)).name || "undefined"
-            nft_data.ownerName = (await getUserByAddress(nft_data.owner)).name || "undefined"
             nft_data.userName = (await getUserByAddress(nft_data.user)).name || "undefined"
+            const nft_owner = await getUserByAddress(nft_data.owner)
+            nft_data.ownerName = nft_owner.name || "undefined"
+            nft_data.ownerProfileImage = nft_owner.profileImage || "undefined"
 
             let collection_data = await db.collection("collections").findOne({ _id: req.params.collectionId });
+            const collection_owner = await getUserByAddress(collection_data.createdBy);
+            collection_data.creatorName = collection_owner.name || "undefined"
+            collection_data.creatorProfileImage = collection_owner.profileImage || "undefined"
 
             let listings = [];
             if(nft_data.sell_listed_status){
