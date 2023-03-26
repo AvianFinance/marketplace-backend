@@ -26,6 +26,8 @@ async function reader(){
             if (currentItem.event == "ItemCanceled") {
                 logger.info("Processing ItemCanceled Event......")
                 logger.info(JSON.stringify(currentItem.data))
+                logger.warn("Logic not implemented")
+                logger.info(JSON.stringify(currentItem.data))
             }
             if (currentItem.event == "ItemBought") {
                 logger.info("Processing ItemBought Event.....")
@@ -39,6 +41,8 @@ async function reader(){
             }
             if (currentItem.event == "NFTUnlisted") {
                 logger.info("Processing NFTUnlisted Event.....")
+                logger.info(JSON.stringify(currentItem.data))
+                logger.warn("Logic not implemented")
                 logger.info(JSON.stringify(currentItem.data))
             }
             if (currentItem.event == "NFTRented") {

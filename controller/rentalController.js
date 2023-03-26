@@ -1,5 +1,5 @@
 const dbo = require('../database/conn')
-const mplace_contract = require('../services/contract_create')
+const contract_service = require('../services/contract_create')
 const collectionName = "collections"
 const { getUserByAddress } = require('./userController')
 const logger = require('../utils/logger')
@@ -8,15 +8,15 @@ const logger = require('../utils/logger')
 // @route GET /api/rental/explore
 const getRentalCollections = async (req, res, next) => {
   try {
-    const m_contract = mplace_contract.createABI();
-    const instm_contract = mplace_contract.createInsABI();
+    const rent_exchange_contract = contract_service.createAREPABI();
+    const inst_exchange_contract = contract_service.createAIEPABI();
   
     const db = dbo.getDb();
     let collection = await db.collection(collectionName);
     logger.info(`Getting rental collection explore details..`)
-    const r_tx = await m_contract.getRListedAdddresses() // Gives all the token addresses listed for renting
+    const r_tx = await rent_exchange_contract.getRListedAdddresses() // Gives all the token addresses listed for renting
     // logger.info(`Rental list ${r_tx}`)
-    const ins_tx = await instm_contract.getInsListedAdddresses() // Gives all the token addresses listed for installement renting
+    const ins_tx = await inst_exchange_contract.getInsListedAdddresses() // Gives all the token addresses listed for installement renting
     // logger.info(`Installement Rental list ${ins_tx}`)
   
     output = []
@@ -75,7 +75,7 @@ const getRentalCollections = async (req, res, next) => {
         }
         ins_output.push(result);
       } else {
-        logger.info(`Details of Collection ${ins_tx[i]} is not in the database`)
+        logger.warn(`Details of Collection ${ins_tx[i]} is not in the database`)
       }
     }
     output = { upright: r_output, inst: ins_output }
@@ -92,16 +92,16 @@ const getRentalCollections = async (req, res, next) => {
 const getRentalCollectionTokens = async (req, res, next) => {
 
   try {
-    const m_contract = mplace_contract.createABI();
-    const instm_contract = mplace_contract.createInsABI();
+    const rent_exchange_contract = contract_service.createAREPABI();
+    const inst_exchange_contract = contract_service.createAIEPABI();
   
     const db = dbo.getDb();
     
     const token_address = req.params.collectionId
     logger.info(`Getting rental tokens..`)
     const collection_data = await db.collection("collections").findOne({ _id: token_address })
-    const r_tx = await m_contract.getRListedAdddressTokens(token_address);
-    const ins_tx = await instm_contract.getInsListedAdddressTokens(token_address);
+    const r_tx = await rent_exchange_contract.getRListedAdddressTokens(token_address);
+    const ins_tx = await inst_exchange_contract.getInsListedAdddressTokens(token_address);
 
     let collection = await db.collection("nft_details");
 
@@ -113,10 +113,9 @@ const getRentalCollectionTokens = async (req, res, next) => {
       let query = { coll_addr: token_address, token_id: r_tx[i].toNumber() }
       let result = (await collection.find(query).toArray())[0];
       if (result) {
-        const listing = await m_contract.getARListing(token_address, r_tx[i].toNumber());
+        const listing = await rent_exchange_contract.getARListing(token_address, r_tx[i].toNumber());
+        console.log(listing)
         result.pricePerDay = listing.pricePerDay
-        result.startDateUNIX = listing.startDateUNIX
-        result.endDateUNIX = listing.endDateUNIX
         result.expires = listing.expires
         result.type = "UPRIGHT"
         r_output.push(result)
@@ -129,7 +128,8 @@ const getRentalCollectionTokens = async (req, res, next) => {
       let query = { coll_addr: token_address, token_id: ins_tx[i].toNumber() }
       let result = (await collection.find(query).toArray())[0];
       if (result) {
-        const listing = await instm_contract.getAInsListing(token_address, ins_tx[i].toNumber());
+        const listing = await inst_exchange_contract.getAInsListing(token_address, ins_tx[i].toNumber());
+        console.log(listing)
         result.pricePerDay = listing.pricePerDay
         result.installmentCount = listing.installmentCount
         result.installmentIndex = listing.installmentIndex
@@ -138,7 +138,7 @@ const getRentalCollectionTokens = async (req, res, next) => {
         result.type = "INST"
         ins_output.push(result)
       } else {
-        logger.info(`Details of token ${ins_tx[i]} is not in the database`)
+        logger.warn(`Details of token ${ins_tx[i]} is not in the database`)
       }
     }
     output = { collection: collection_data, upright: r_output, inst: ins_output }
