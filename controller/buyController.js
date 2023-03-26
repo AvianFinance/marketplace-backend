@@ -2,11 +2,13 @@ const dbo = require('../database/conn')
 const mplace_contract = require('../services/contract_create')
 const collectionName = "collections"
 const { getUserByAddress } = require('./userController')
+const logger = require("../utils/logger")
 
 // @desc Get the rentals
 // @route GET /api/buy/explore
-const getBuyCollections = async (req, res) => {
-  const m_contract = mplace_contract.createABI();
+const getBuyCollections = async (req, res, next) => {
+  try {
+    const m_contract = mplace_contract.createABI();
   const db = dbo.getDb();
   let collection = await db.collection(collectionName);
 
@@ -36,28 +38,39 @@ const getBuyCollections = async (req, res) => {
     output.push(result);
   }
   res.send(output).status(200)
+  } catch (err) {
+    logger.error(err);
+    next({ status: 500, message: err.message })
+  }
 }
 
 // @desc Get the rentals in a collection
 // @route GET /api/buy/explore/:collectionID
-const getBuyCollectionTokens = async (req, res) => {
-  const m_contract = mplace_contract.createABI();
-  const token_address = req.params.collectionId
+const getBuyCollectionTokens = async (req, res, next) => {
+  try {
+    const m_contract = mplace_contract.createABI();
+    const token_address = req.params.collectionId
 
-  const tx = await m_contract.getSListedAdddressTokens(token_address);
+    const tx = await m_contract.getSListedAdddressTokens(token_address);
 
-  const db = dbo.getDb();
-  let collection = await db.collection("nft_details");
+    const db = dbo.getDb();
+    const collection_data = await db.collection("collections").findOne({ _id: token_address })
+    let collection = await db.collection("nft_details");
 
-  let output = []
-  for (i in tx) {
-    let query = { coll_addr: token_address, token_id: tx[i].toNumber() }
-    let result = (await collection.find(query).toArray())[0];
-    const listing = await m_contract.getASListing(token_address, tx[i].toNumber());
-    result.price = listing.price
-    output.push(result)
+    let tokens = []
+    for (i in tx) {
+      let query = { coll_addr: token_address, token_id: tx[i].toNumber() }
+      let result = (await collection.find(query).toArray())[0];
+      const listing = await m_contract.getASListing(token_address, tx[i].toNumber());
+      result.price = listing.price
+      tokens.push(result)
+    }
+    output = { collection: collection_data, token: tokens }
+    res.send(output).status(200);
+  } catch (err) {
+    logger.error(err);
+    next({ status: 500, message: err.message })
   }
-  res.send(output).status(200);
 }
 
 module.exports = {
