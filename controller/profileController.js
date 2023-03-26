@@ -75,6 +75,7 @@ const getCollections = async (req, res, next) => {
             let tokensList = await db.collection("nft_details").find({ coll_addr: collections[i]._id }).toArray();
 
             if (tokensList.length > 0) {
+                collections[i].count = tokensList.length
                 let uriList = []
                 for (token in tokensList) {
                     uriList.push(tokensList[token].uri)
