@@ -22,7 +22,7 @@ async function getTokenCounter(token_address) {
 
 async function getTokenType(token_address) {
     
-    const rent_exchange_contract = contract_service.createAREPABI;
+    const rent_exchange_contract = contract_service.createAREPABI();
     const type = await rent_exchange_contract.isRentableNFT(token_address);
     return type
 }

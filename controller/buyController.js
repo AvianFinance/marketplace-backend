@@ -48,7 +48,7 @@ const getBuyCollections = async (req, res, next) => {
 // @route GET /api/buy/explore/:collectionID
 const getBuyCollectionTokens = async (req, res, next) => {
   try {
-    const sell_exchange_contract = contract_service.createABI();
+    const sell_exchange_contract = contract_service.createASEPABI();
     const token_address = req.params.collectionId
 
     const tx = await sell_exchange_contract.getSListedAdddressTokens(token_address);
