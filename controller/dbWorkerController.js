@@ -295,7 +295,7 @@ async function insNftPaidEvent(data) {
             event: "Paid [Installment Rent]",
             from: data.user,
             to: data.owner,
-            price: data.pricePerDay,
+            price: data.insAmount,
             createdAt: new Date()
         };
 
@@ -327,14 +327,14 @@ async function insNftPaidEvent(data) {
             logger.info(`A document inserted to market_events with the _id: ${result2.insertedId}`);
 
             //Update nft details with expiry
-            const update = client.db(db_name).collection("nft_details").updateOne(query1, {expiry: data.expires})
+            const update = await client.db(db_name).collection("nft_details").updateOne(query1, {expiry: data.expires})
             logger.info(`nft_details Update result: ${JSON.stringify(update)}`)
         }
 
         // Update status if the installment is paid
         if(parseInt(data.insIndex._hex) == parseInt(data.insCount._hex)){
             const u_query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), inst_status: "PAYING"};
-            const collection = client.db(db_name).collection("inst_listings").updateOne(u_query , {inst_status: "COMPLETED"});
+            const collection = await client.db(db_name).collection("inst_listings").updateOne(u_query , {inst_status: "COMPLETED"});
         }
     } catch (e) {
         logger.info("Error Updating database!")
