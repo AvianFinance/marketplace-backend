@@ -118,11 +118,22 @@ const getLended = async (req, res, next) => {
     }
 }
 
+const getCollectionTokens = async (req, res, next) => {
+    try {
+        const db = dbo.getDb();
+        let result = await db.collection("nft_details").find({coll_addr:req.params.collectionAdd}).toArray();
+        res.send(result).status(200);
+    } catch (err) {
+        logger.error(err);
+        next({ status: 500, message: err.message })
+    }
+}
 module.exports = {
     getOwned,
     getCollected,
     getRented,
     getCollections,
     getListed,
-    getLended
+    getLended,
+    getCollectionTokens
 }
