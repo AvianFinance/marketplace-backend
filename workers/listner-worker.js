@@ -156,7 +156,7 @@ async function getTransfer() {
 
     })
 
-    insmplace_contract.on("NFTINSPaid", (owner, user, nftContract, tokenId, expires, insCount, insIndex, insAmount, totalPaid) => {
+    inst_exchange_contract.on("NFTINSPaid", (owner, user, nftContract, tokenId, expires, insCount, insIndex, insAmount, totalPaid) => {
 
         let transferEvent = {
             owner: owner,

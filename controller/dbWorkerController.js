@@ -277,7 +277,7 @@ async function insNftPaidEvent(data) {
 
         const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), listed_status : true, inst_status: "LISTED"};
         const updates = {
-            $set: { listed_status: false, inst_status: "PAYING" }
+            $set: {user: data.user, listed_status: false, inst_status: "PAYING" }
         };
 
         const query1 = { coll_addr: data.nftContract, token_id: parseInt(data.tokenId._hex) };
