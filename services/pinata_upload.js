@@ -1,10 +1,10 @@
 const axios = require('axios');
 const FormData = require('form-data');
 const logger = require('../utils/logger');
+const config = require('../config/app-config')
 
-const API_KEY = "d96d1d45c7c5f1a11650"
-const API_SECRET = "a880ba1d86b661d62650dc059f1bc23e2d28fcca6cfd430b0e2c2e6f679c3d9a"
-
+const API_KEY = config.pinata_api_key
+const API_SECRET = config.pinata_api_secret
 
 async function uploadToPinata(formData, tokenId, nft_title, nft_desc) {
 

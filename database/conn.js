@@ -1,6 +1,7 @@
 const { MongoClient } = require("mongodb");
 const config = require('../config/app-config');
 const logger = require("../utils/logger");
+
 const connectionString = config.db_connection
 
 const client = new MongoClient(connectionString, {
