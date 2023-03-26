@@ -114,7 +114,6 @@ const getRentalCollectionTokens = async (req, res, next) => {
       let result = (await collection.find(query).toArray())[0];
       if (result) {
         const listing = await rent_exchange_contract.getARListing(token_address, r_tx[i].toNumber());
-        console.log(listing)
         result.pricePerDay = listing.pricePerDay
         result.expires = listing.expires
         result.type = "UPRIGHT"
@@ -129,7 +128,6 @@ const getRentalCollectionTokens = async (req, res, next) => {
       let result = (await collection.find(query).toArray())[0];
       if (result) {
         const listing = await inst_exchange_contract.getAInsListing(token_address, ins_tx[i].toNumber());
-        console.log(listing)
         result.pricePerDay = listing.pricePerDay
         result.installmentCount = listing.installmentCount
         result.installmentIndex = listing.installmentIndex
