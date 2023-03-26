@@ -58,6 +58,19 @@ const getOneNft = async (req, res, next) => {
     }
 }
 
+const getNftActivity = async (req, res, next) => {
+    try {
+        const db = dbo.getDb();
+        let query = { nftContract: req.params.collectionId, tokenId: parseInt(req.params.tokenId) };
+        let activity = await db.collection("market_events").find(query).toArray();
+        res.send(activity).status(200);
+    } catch (err) {
+        logger.error(err);
+        next({ status: 500, message: err.message })
+    }
+}
+
 module.exports = {
-    getOneNft
+    getOneNft,
+    getNftActivity
 }

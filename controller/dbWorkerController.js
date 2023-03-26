@@ -35,8 +35,18 @@ async function itemListedEvent(data) {
         const result1 = await collection1.updateOne(query, updates);
         logger.info(JSON.stringify(result1))
 
+        const event = {
+            nftContract: data.nftAddress,
+            tokenId: parseInt(data.tokenId._hex),
+            event: "List [Sell]",
+            from: data.seller,
+            to: "",
+            price: data.price,
+            createdAt: new Date()
+        };
+
         const collection2 = client.db(db_name).collection("market_events");
-        const result2 = await collection2.insertOne(document);
+        const result2 = await collection2.insertOne(event);
         logger.info(`A document was inserted with the _id: ${result2.insertedId}`,);
 
     } catch (err) {
@@ -60,7 +70,6 @@ async function itemBoughtEvent(data) {
         };
         logger.info(`Document to be inserted : [${JSON.stringify(document)}]`)
 
-        // const query = { nftAddress: data.nftAddress, tokenId: parseInt(data.tokenId._hex), event: "LIST-SELL" };
         const query = { nftAddress: data.nftAddress, tokenId: parseInt(data.tokenId._hex), listed_status: true, sold_status: false };
         const updates = {
             $set: { listed_status: false, sold_status: true }
@@ -72,10 +81,6 @@ async function itemBoughtEvent(data) {
         };
         await client.connect();
 
-        // const collection = client.db(db_name).collection("sell_listings");
-        // const result = await collection.deleteOne(query)
-        // logger.info("Document deletion successful")
-
         const collection = client.db(db_name).collection("sell_listings");
         const result = await collection.updateOne(query, updates);
         logger.info(JSON.stringify(result))
@@ -84,8 +89,19 @@ async function itemBoughtEvent(data) {
         const result1 = await collection1.updateOne(query1, updates1);
         logger.info(result1)
 
+        //TODO: from should be from seller
+        const event = {
+            nftContract: data.nftAddress,
+            tokenId: parseInt(data.tokenId._hex),
+            event: "Buy",
+            from: "",
+            to: data.buyer,
+            price: data.price,
+            createdAt: new Date()
+        };
+
         const collection2 = client.db(db_name).collection("market_events");
-        const result2 = await collection2.insertOne(document);
+        const result2 = await collection2.insertOne(event);
         logger.info(`A document was inserted with the _id: ${result2.insertedId}`,);
 
     } catch (e) {
@@ -128,8 +144,18 @@ async function nftListedEvent(data) {
         const result1 = await collection1.updateOne(query, updates);
         logger.info(JSON.stringify(result1))
 
+        const event = {
+            nftContract: data.nftContract,
+            tokenId: parseInt(data.tokenId._hex),
+            event: "List [Upright Rent]",
+            from: data.owner,
+            to: "",
+            price: data.pricePerDay,
+            createdAt: new Date()
+        };
+
         const collection2 = client.db(db_name).collection("market_events");
-        const result2 = await collection2.insertOne(document);
+        const result2 = await collection2.insertOne(event);
         logger.info(`A document was inserted with the _id: ${result2.insertedId}`);
 
     } catch (e) {
@@ -156,7 +182,6 @@ async function nftRentedEvent(data) {
         };
         logger.info(`Document to be inserted : [${JSON.stringify(document)}]`)
 
-        // const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), event: "LIST-RENT" };
         const query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), listed_status : true, rent_status: false};
         const updates = {
             $set: { listed_status: false, rent_status: true }
@@ -168,9 +193,6 @@ async function nftRentedEvent(data) {
         };
 
         await client.connect();
-        // const collection = client.db(db_name).collection("rental_listings");
-        // const result = await collection.deleteOne(query)
-        // logger.info("Document deletion successful")
 
         const collection = client.db(db_name).collection("rental_listings");
         const result = await collection.updateOne(query, updates);
@@ -180,8 +202,18 @@ async function nftRentedEvent(data) {
         const result1 = await collection1.updateOne(query1, updates1);
         logger.info(JSON.stringify(result1))
 
+        const event = {
+            nftContract: data.nftContract,
+            tokenId: parseInt(data.tokenId._hex),
+            event: "Rent [Upright]",
+            from: data.owner,
+            to: data.user,
+            price: data.rentalFee,
+            createdAt: new Date()
+        };
+
         const collection2 = client.db(db_name).collection("market_events");
-        const result2 = await collection2.insertOne(document);
+        const result2 = await collection2.insertOne(event);
         logger.info(`A document was inserted with the _id: ${result2.insertedId}`);
 
     } catch (e) {
@@ -223,8 +255,18 @@ async function insNftListedEvent(data) {
         const result1 = await collection1.updateOne(query, updates);
         logger.info(JSON.stringify(result1))
 
+        const event = {
+            nftContract: data.nftContract,
+            tokenId: parseInt(data.tokenId._hex),
+            event: "List [Installment Rent]",
+            from: data.owner,
+            to: "",
+            price: data.pricePerDay,
+            createdAt: new Date()
+        };
+
         const collection2 = client.db(db_name).collection("market_events");
-        const result2 = await collection2.insertOne(document);
+        const result2 = await collection2.insertOne(event);
         logger.info(`A document was inserted with the _id: ${result2.insertedId}`);
 
     } catch (e) {
@@ -269,6 +311,16 @@ async function insNftPaidEvent(data) {
         const installment = await client.db(db_name).collection("nft_details").findOne(query1);
         logger.info(JSON.stringify(installment));
 
+        const event = {
+            nftContract: data.nftContract,
+            tokenId: parseInt(data.tokenId._hex),
+            event: "Paid [Installment Rent]",
+            from: data.owner,
+            to: data.user,
+            price: data.pricePerDay,
+            createdAt: new Date()
+        };
+
         if (installment.inst_listed_status == true) {
 
             const collection = client.db(db_name).collection("inst_listings");
@@ -280,14 +332,14 @@ async function insNftPaidEvent(data) {
             logger.info(JSON.stringify(result1))
 
             const collection2 = client.db(db_name).collection("market_events");
-            const result2 = await collection2.insertOne(document);
+            const result2 = await collection2.insertOne(event);
             logger.info(`A document was inserted with the _id: ${result2.insertedId}`);
         }
 
         if (installment.inst_listed_status == false) {
             console.log("This is other installment pay")
             const collection2 = client.db(db_name).collection("market_events");
-            const result2 = await collection2.insertOne(document);
+            const result2 = await collection2.insertOne(event);
             logger.info(`A document was inserted with the _id: ${result2.insertedId}`);
 
             const update = client.db(db_name).collection("nft_details").updateOne(query1, {expiry: data.expires})
