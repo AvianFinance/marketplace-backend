@@ -78,7 +78,7 @@ const { createCollection, getCollectionByID } = require('../controller/collectio
  *         description: Some server error
 */
 
-router.post('/',  createCollection);
+router.post('/', createCollection);
 
 /**
  * @swagger
@@ -135,6 +135,6 @@ router.post('/',  createCollection);
  *         description: Some server error
  *
  */
-router.get('/:userAddress',  getCollectionByID);
+router.get('/:userAddress', getCollectionByID);
 
 module.exports = router;

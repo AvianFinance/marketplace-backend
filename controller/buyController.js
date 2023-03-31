@@ -1,43 +1,43 @@
 const dbo = require('../database/conn')
-const mplace_contract = require('../services/contract_create')
-const collectionName = "collections"
-const { getUserByAddress } = require('./userController')
+const contract_service = require('../services/contract_create')
 const logger = require("../utils/logger")
+const { getUserByAddress } = require('./userController')
+const collectionName = "collections"
 
 // @desc Get the rentals
 // @route GET /api/buy/explore
 const getBuyCollections = async (req, res, next) => {
   try {
-    const m_contract = mplace_contract.createABI();
-  const db = dbo.getDb();
-  let collection = await db.collection(collectionName);
+    const sell_exchange_contract = contract_service.createASEPABI();
+    const db = dbo.getDb();
+    let collection = await db.collection(collectionName);
 
-  const tx = await m_contract.getSListedAdddresses() // Gives all the token addresses listed for renting
-  output = []
+    const tx = await sell_exchange_contract.getSListedAdddresses() // Gives all the token addresses listed for renting
+    output = []
 
-  for (i in tx) {
-    let query = { _id: tx[i] };
-    let result = await collection.findOne(query);
-    let user = await getUserByAddress(result.createdBy)
-    result.createdUserName = user.name
-    result.createdUserImage = user.profileImage
+    for (i in tx) {
+      let query = { _id: tx[i] };
+      let result = await collection.findOne(query);
+      let user = await getUserByAddress(result.createdBy)
+      result.createdUserName = user.name
+      result.createdUserImage = user.profileImage
 
-    let tokensList = await db.collection("nft_details").find({ coll_addr: tx[i] }).toArray();
+      let tokensList = await db.collection("nft_details").find({ coll_addr: tx[i] }).toArray();
 
-    if (tokensList.length > 0) {
-      result.count = tokensList.length
-      let uriList = []
-      for (token in tokensList) {
-        uriList.push(tokensList[token].uri)
+      if (tokensList.length > 0) {
+        result.count = tokensList.length
+        let uriList = []
+        for (token in tokensList) {
+          uriList.push(tokensList[token].uri)
+        }
+        if (uriList.length > 4) {
+          uriList = uriList.slice(0, 4)
+        }
+        result.tokens = uriList
       }
-      if (uriList.length > 4) {
-        uriList = uriList.slice(0, 4)
-      }
-      result.tokens = uriList
+      output.push(result);
     }
-    output.push(result);
-  }
-  res.send(output).status(200)
+    res.send(output).status(200)
   } catch (err) {
     logger.error(err);
     next({ status: 500, message: err.message })
@@ -48,10 +48,10 @@ const getBuyCollections = async (req, res, next) => {
 // @route GET /api/buy/explore/:collectionID
 const getBuyCollectionTokens = async (req, res, next) => {
   try {
-    const m_contract = mplace_contract.createABI();
+    const sell_exchange_contract = contract_service.createASEPABI();
     const token_address = req.params.collectionId
 
-    const tx = await m_contract.getSListedAdddressTokens(token_address);
+    const tx = await sell_exchange_contract.getSListedAdddressTokens(token_address);
 
     const db = dbo.getDb();
     const collection_data = await db.collection("collections").findOne({ _id: token_address })
@@ -61,7 +61,7 @@ const getBuyCollectionTokens = async (req, res, next) => {
     for (i in tx) {
       let query = { coll_addr: token_address, token_id: tx[i].toNumber() }
       let result = (await collection.find(query).toArray())[0];
-      const listing = await m_contract.getASListing(token_address, tx[i].toNumber());
+      const listing = await sell_exchange_contract.getASListing(token_address, tx[i].toNumber());
       result.price = listing.price
       tokens.push(result)
     }

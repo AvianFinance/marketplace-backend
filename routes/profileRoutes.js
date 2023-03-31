@@ -3,7 +3,7 @@ const router = express.Router();
 
 const dbo = require("../database/conn");
 
-const { getOwned, getCollected, getRented, getCollections, getListed, getLended } = require('../controller/profileController');
+const { getOwned, getCollected, getRented, getCollections, getListed, getLended, getCollectionTokens } = require('../controller/profileController');
 
 /**
  * @swagger
@@ -40,6 +40,18 @@ router.get('/owned/:userAdd', getOwned);
  *     tags: [Profile]
 */
 router.get('/collections/:userAdd', getCollections);
+
+/**
+ * @swagger
+ *  tags:
+ *   name: Profile
+ *   description: Managing user profile 
+ * /profile/collections:
+ *   get:
+ *     summary: Retrieve a list of collections created by user
+ *     tags: [Profile]
+*/
+router.get('/collections/:userAdd/:collectionAdd', getCollectionTokens);
 
 /**
  * @swagger

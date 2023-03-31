@@ -23,7 +23,6 @@ const mintNFT = async (req, res, next) => {
 // @desc Save NFT details
 // @route POST /api/mint
 const saveMintNFT = async (req, res, next) => {
-    //TODO ENHC: Save usernames 
     try {
         const db = dbo.getDb();
         let collectionType = await db.collection("collections").findOne({ _id: req.body.coll_addr });
@@ -47,8 +46,19 @@ const saveMintNFT = async (req, res, next) => {
         let nftCreated = { _id: create.insertedId };
         let nft = await db.collection("nft_details").findOne(nftCreated);
         logger.info("NFT minted successfully")
-        nftDocument.event = "MINT"
-        let event = await db.collection("market_events").insertOne(nftDocument);
+
+        //Add to market events
+        const eventDocument = {
+            nftContract: req.body.coll_addr,
+            tokenId: req.body.token_id,
+            event: "Mint",
+            from: "",
+            to: req.body.minter,
+            price: "",
+            createdAt: new Date()
+        };
+
+        let event = await db.collection("market_events").insertOne(eventDocument);
         res.send(nft).status(201);
     } catch (err) {
         logger.error(err);
