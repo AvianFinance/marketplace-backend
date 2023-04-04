@@ -121,10 +121,25 @@ const getLended = async (req, res, next) => {
 const getCollectionTokens = async (req, res, next) => {
     try {
         const db = dbo.getDb();
-        let result = await db.collection("nft_details").find({coll_addr:req.params.collectionAdd}).toArray();
-        res.send(result).status(200);
+        let collection_data = await db.collection("collections").findOne({ _id: req.params.collectionAdd });
+        let result = await db.collection("nft_details").find({ coll_addr: req.params.collectionAdd }).toArray();
+        if (result) {
+            for (i in result) {
+                let user = await getUserByAddress(result[i].owner)
+                if(user){
+                    result[i].ownerUserName = user.name
+                    result[i].ownerUserImage = user.profileImage 
+                } else {
+                    result[i].ownerUserName = "undefined"
+                    result[i].ownerUserImage = "" 
+                }
+            }
+        }
+        let output = { collection: collection_data, tokens: result }
+        res.send(output).status(200);
     } catch (err) {
         logger.error(err);
+        console.log(err)
         next({ status: 500, message: err.message })
     }
 }
