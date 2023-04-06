@@ -5,3 +5,4 @@
 * remove unused token array in the collection and update the post request
 * when a NFT is rented only the user role is changed. hence it is displayed in collected. then it can be sold. check a solution
 * a solution to when the server is down events are not captured
+* Handle errr when no IPF Hash
