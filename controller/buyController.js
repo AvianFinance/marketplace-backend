@@ -18,24 +18,31 @@ const getBuyCollections = async (req, res, next) => {
     for (i in tx) {
       let query = { _id: tx[i] };
       let result = await collection.findOne(query);
-      let user = await getUserByAddress(result.createdBy)
-      result.createdUserName = user.name
-      result.createdUserImage = user.profileImage
+      if(result){
+        let user = await getUserByAddress(result.createdBy)
+        result.createdUserName = user.name
+        result.createdUserImage = user.profileImage
+        let tokensList = await db.collection("nft_details").find({ coll_addr: tx[i] }).toArray();
 
-      let tokensList = await db.collection("nft_details").find({ coll_addr: tx[i] }).toArray();
-
-      if (tokensList.length > 0) {
-        result.count = tokensList.length
-        let uriList = []
-        for (token in tokensList) {
-          uriList.push(tokensList[token].uri)
-        }
-        if (uriList.length > 4) {
-          uriList = uriList.slice(0, 4)
-        }
-        result.tokens = uriList
+        if (tokensList.length > 0) {
+            result.count = tokensList.length
+            let uriList = []
+            for (token in tokensList) {
+              uriList.push(tokensList[token].uri)
+            }
+            if (uriList.length > 4) {
+              uriList = uriList.slice(0, 4)
+            }
+            result.tokens = uriList
+          }
+          output.push(result);
+      } else {
+        logger.warn(`${tx[i]} not found in collection`);
       }
-      output.push(result);
+      
+
+      
+      
     }
     res.send(output).status(200)
   } catch (err) {
