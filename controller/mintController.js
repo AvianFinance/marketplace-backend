@@ -6,18 +6,22 @@ const logger = require('../utils/logger');
 // @desc Upload to IPFS
 // @route POST /api/mint/ipfs
 const mintNFT = async (req, res, next) => {
-
-    const token_address = req.body.coll_addr;
-    const nft_name = req.body.nftName
-    const nft_desc = req.body.nftDescription
-    const IPFSLink = req.body.uri
-
-    const tokenCounter = await getTokenCounter(token_address)
-
-    const ipfsHash = await sendMetadata(IPFSLink, nft_name, nft_desc, tokenCounter)
-    const token_type = await getTokenType(token_address)
-    logger.info("Metadata uploaded to IPFS")
-    res.send({ ipfsHash, token_type, tokenCounter }).status(200);
+    try {
+        const token_address = req.body.coll_addr;
+        const nft_name = req.body.nftName
+        const nft_desc = req.body.nftDescription
+        const IPFSLink = req.body.uri
+    
+        const tokenCounter = await getTokenCounter(token_address)
+    
+        const ipfsHash = await sendMetadata(IPFSLink, nft_name, nft_desc, tokenCounter)
+        const token_type = await getTokenType(token_address)
+        logger.info("Metadata uploaded to IPFS")
+        res.send({ ipfsHash, token_type, tokenCounter }).status(200);
+    } catch(err){
+        console.log(err)
+        next({ status: 500, message: "IPFS Metadata Upload Error. Contact Admin" })
+    }
 }
 
 // @desc Save NFT details

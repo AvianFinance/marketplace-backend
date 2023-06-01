@@ -1,6 +1,12 @@
-function ErrorHandler(Error, req, res, next){
-    res.status(Error.status || 500)
-    res.send({"error": true, "message": Error.message || "Internal Server Error"})
+function ErrorHandler(err, req, res, next) {
+    if (res.headersSent) {
+        return next(err)
+    }
+    res.status(err.status || 500);
+    res.json({
+        message: err.message,
+        error: err
+    });
 }
 
 module.exports = ErrorHandler;

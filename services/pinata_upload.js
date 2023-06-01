@@ -35,6 +35,7 @@ async function sendMetadata(IPFSHash, nft_title, nft_desc, tokenId) {
         description: nft_desc,
         attributes: []
     }
+
     const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
     const response = await axios.post(
         url,
@@ -48,12 +49,16 @@ async function sendMetadata(IPFSHash, nft_title, nft_desc, tokenId) {
             }
         }
     ).catch(function (error) {
-        logger.info(error.response.data.error)
+        logger.error(JSON.stringify(error.response.data.error))
+        throw new Error(error.response.data.error.details)
     })
-    logger.info(`IpfHash : ${response.data.IpfsHash}`)
-    return {
-        "ipfsHash": response.data.IpfsHash,
-        "imageUri": `https://gateway.pinata.cloud/ipfs/${IPFSHash}`
+
+    if (response) {
+        logger.info(`IpfHash : ${response.data.IpfsHash}`)
+        return {
+            "ipfsHash": response.data.IpfsHash,
+            "imageUri": `https://gateway.pinata.cloud/ipfs/${IPFSHash}`
+        }
     }
 }
 
