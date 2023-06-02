@@ -5,6 +5,18 @@ const logger = require('../utils/logger');
 
 // @desc Upload to IPFS
 // @route POST /api/mint/ipfs
+
+const getNFTDetails =  async (address, tokenId) => {
+    try{
+        await client.connect();
+        const collection = client.db(db_name).collection("nft_details");
+        const result = await collection.findOne({ coll_addr: address, token_id: tokenId});
+        return(result)
+    } catch(err){
+        logger.error(err)
+    }
+}
+
 const mintNFT = async (req, res, next) => {
     try {
         const token_address = req.body.coll_addr;
@@ -50,11 +62,16 @@ const saveMintNFT = async (req, res, next) => {
         let nftCreated = { _id: create.insertedId };
         let nft = await db.collection("nft_details").findOne(nftCreated);
         logger.info("NFT minted successfully")
+        nft_details = await getNFTDetails(req.body.coll_addr, req.body.token_id)
 
         //Add to market events
         const eventDocument = {
             nftContract: req.body.coll_addr,
             tokenId: req.body.token_id,
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "List",
             event: "Mint",
             from: "",
             to: req.body.minter,
@@ -105,11 +122,16 @@ const depositNFT = async (req, res, next) => {
         };
         const update = await db.collection("nft_details").updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(update)}`)
+        nft_details = await getNFTDetails(req.body.coll_addrt, req.body.token_id)
 
         //Add to market events
         const depositEvent = {
             nftContract: req.body.coll_addr,
             tokenId: req.body.token_id,
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "List",
             event: "Deposit",
             from: req.body.owner,
             to: req.body.coll_addr,

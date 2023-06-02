@@ -1,6 +1,7 @@
 const dbo = require("../database/conn");
 const { getUserByAddress } = require('./userController')
-const logger = require("../utils/logger")
+const logger = require("../utils/logger");
+const { query } = require("express");
 
 const getOneNft = async (req, res, next) => {
     try {
@@ -70,7 +71,34 @@ const getNftActivity = async (req, res, next) => {
     }
 }
 
+const getUserNftActivity = async (req, res, next) => {
+    try {
+        const db = dbo.getDb();
+        let query = { '$or': [ {'to': req.params.address}, {'from': req.params.address}]}
+        let activities = await db.collection("market_events").find(query).toArray();
+        res.send(activities).status(200);
+    } catch (err) {
+        logger.error(err);
+        next({ status: 500, message: err.message })
+    }
+}
+
+const getNftCollectionActivity = async (req, res, next) => {
+    try {
+        console.log(req.params.collectionId)
+        const db = dbo.getDb();
+        console.log(req.params.collectionId)
+        let query = { from: req.params.collectionId };
+        let activities = await db.collection("market_events").find({ nftContract: req.params.collectionId }).toArray();
+        res.send(activities).status(200);
+    } catch (err) {
+        logger.error(err);
+        next({ status: 500, message: err.message })
+    }
+}
 module.exports = {
     getOneNft,
-    getNftActivity
+    getNftActivity,
+    getNftCollectionActivity,
+    getUserNftActivity
 }

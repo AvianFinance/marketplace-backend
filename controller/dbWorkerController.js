@@ -6,6 +6,18 @@ const db_name = config.db_name
 const uri = config.db_connection
 const client = new MongoClient(uri);
 
+
+const getNFTDetails =  async (address, tokenId) => {
+    try{
+        await client.connect();
+        const collection = client.db(db_name).collection("nft_details");
+        const result = await collection.findOne({ coll_addr: address, token_id: tokenId});
+        return(result)
+    } catch(err){
+        logger.error(err)
+    }
+}
+
 async function itemListedEvent(data) {
     try {
         await client.connect();
@@ -37,11 +49,16 @@ async function itemListedEvent(data) {
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
+        nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
 
         //Add to market events
         const event = {
             nftContract: data.nftAddress,
             tokenId: parseInt(data.tokenId._hex),
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "List",
             event: "List [Sell]",
             from: data.seller,
             to: "",
@@ -84,12 +101,17 @@ async function itemBoughtEvent(data) {
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query1, updates1);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
+        nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
 
         //Update market events
         //TODO: Get from adress as seller
         const event = {
             nftContract: data.nftAddress,
             tokenId: parseInt(data.tokenId._hex),
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "List",
             event: "Buy",
             from: "",
             to: data.buyer,
@@ -143,11 +165,16 @@ async function nftListedEvent(data) {
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
+        nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
 
         //Insert to market events
         const event = {
             nftContract: data.nftContract,
             tokenId: parseInt(data.tokenId._hex),
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "List",
             event: "List [Upright Rent]",
             from: data.owner,
             to: "",
@@ -190,11 +217,16 @@ async function nftRentedEvent(data) {
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query1, updates1);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
-
+        nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
+        
         //Add to market events
         const event = {
             nftContract: data.nftContract,
             tokenId: parseInt(data.tokenId._hex),
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "Payment",
             event: "Rent [Upright]",
             from: data.owner,
             to: data.user,
@@ -247,11 +279,16 @@ async function insNftListedEvent(data) {
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
+        nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
 
         //Add to market events
         const event = {
             nftContract: data.nftContract,
             tokenId: parseInt(data.tokenId._hex),
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "List",
             event: "List [Installment Rent]",
             from: data.owner,
             to: "",
@@ -292,6 +329,10 @@ async function insNftPaidEvent(data) {
         const event = {
             nftContract: data.nftContract,
             tokenId: parseInt(data.tokenId._hex),
+            name: nft_details.name,
+            token_type: nft_details.token_type,
+            uri: nft_details.uri,
+            basicEvent: "Payment",
             event: "Paid [Installment Rent]",
             from: data.user,
             to: data.owner,
