@@ -18,6 +18,19 @@ const getNFTDetails =  async (address, tokenId) => {
     }
 }
 
+const ImplUpgradeEvent =  async (data) => {
+    try{
+        await client.connect();
+        const collection = client.db(db_name).collection("upgraded-contracts");
+        console.log(data)
+        const result = await collection.updateOne({ contract_address: data.newImplAddrs }, { $set: { status: "Upgraded" } });
+        console.log(data)
+        return(result)
+    } catch(err){
+        logger.error(err)
+    }
+}
+
 async function itemListedEvent(data) {
     try {
         await client.connect();
@@ -391,5 +404,6 @@ module.exports = {
     nftListedEvent,
     nftRentedEvent,
     insNftListedEvent,
-    insNftPaidEvent
+    insNftPaidEvent,
+    ImplUpgradeEvent
 }

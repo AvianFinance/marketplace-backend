@@ -1,5 +1,5 @@
 const {parentPort, workerData} = require("worker_threads");
-const { itemBoughtEvent, itemListedEvent, nftListedEvent, nftRentedEvent, insNftListedEvent, insNftPaidEvent } = require('../controller/dbWorkerController')
+const { itemBoughtEvent, itemListedEvent, nftListedEvent, nftRentedEvent, insNftListedEvent, insNftPaidEvent, ImplUpgradeEvent } = require('../controller/dbWorkerController')
 const logger = require("../utils/logger")
 
 const data_queue = [];
@@ -22,6 +22,11 @@ async function reader(){
                 logger.info("Processing ItemListed Event.....")
                 logger.info(JSON.stringify(currentItem.data))
                 await itemListedEvent(currentItem.data)
+            }
+            if (currentItem.event == "ImplUpgrade") {
+                logger.info("Processing ImplUpgrade Event.....")
+                logger.info(JSON.stringify(currentItem.data))
+                await ImplUpgradeEvent(currentItem.data)
             }
             if (currentItem.event == "ItemCanceled") {
                 logger.info("Processing ItemCanceled Event......")

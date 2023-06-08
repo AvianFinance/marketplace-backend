@@ -46,6 +46,22 @@ async function getTransfer() {
 
     })
 
+    sell_exchange_contract.on("ImplUpgrade", (marketowner, newImplAddrs) => {
+        console.log("ImplUpgrade")
+        let transferEvent = {
+            marketowner: marketowner,
+            newImplAddrs: newImplAddrs,
+        }
+
+        let message = {
+            event: "ImplUpgrade",
+            data: transferEvent
+        }
+
+        parentPort.postMessage(message);
+
+    })
+
     sell_exchange_contract.on("ItemCanceled", (seller, nftAddress, tokenId) => {
 
         let transferEvent = {
