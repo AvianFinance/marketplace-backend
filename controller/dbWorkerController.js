@@ -11,7 +11,8 @@ const getNFTDetails =  async (address, tokenId) => {
     try{
         await client.connect();
         const collection = client.db(db_name).collection("nft_details");
-        const result = await collection.findOne({ coll_addr: address, token_id: tokenId});
+        const query1 = { coll_addr: address, token_id: tokenId};
+        const result = await collection.findOne(query1);
         return(result)
     } catch(err){
         logger.error(err)
@@ -22,9 +23,7 @@ const ImplUpgradeEvent =  async (data) => {
     try{
         await client.connect();
         const collection = client.db(db_name).collection("upgraded-contracts");
-        console.log(data)
         const result = await collection.updateOne({ contract_address: data.newImplAddrs }, { $set: { status: "Upgraded" } });
-        console.log(data)
         return(result)
     } catch(err){
         logger.error(err)
@@ -62,7 +61,7 @@ async function itemListedEvent(data) {
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
-        nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
+        nft_details = await getNFTDetails(data.nftAddress, parseInt(data.tokenId._hex))
 
         //Add to market events
         const event = {
