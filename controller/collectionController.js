@@ -21,7 +21,7 @@ const createCollection = async (req, res, next) => {
       let create = await db.collection("collections").insertOne(collectionDocument);
       let collectionCreated = { _id: create.insertedId };
       let coll = await db.collection("collections").findOne(collectionCreated);
-      logger.info("New Collection Created!")
+      logger.info("New Collection Created by name : " + req.body.name)
       res.send(coll).status(201);
    } catch (err) {
       logger.error(err);

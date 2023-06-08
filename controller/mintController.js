@@ -3,20 +3,19 @@ const { sendMetadata } = require('../services/pinata_upload')
 const { getTokenCounter, getTokenType } = require('../services/token_counter')
 const logger = require('../utils/logger');
 
-// @desc Upload to IPFS
-// @route POST /api/mint/ipfs
-
+// @desc Get NFT details
+// @route GET 
 const getNFTDetails =  async (address, tokenId) => {
     try{
-        await client.connect();
-        const collection = client.db(db_name).collection("nft_details");
-        const result = await collection.findOne({ coll_addr: address, token_id: tokenId});
-        return(result)
+        const nft_data = await db.collection("nft_details").findOne({ coll_addr: address, token_id: tokenId});
+        return(nft_data)
     } catch(err){
         logger.error(err)
     }
 }
 
+// @desc Upload to IPFS
+// @route POST /api/mint/ipfs
 const mintNFT = async (req, res, next) => {
     try {
         const token_address = req.body.coll_addr;
@@ -30,6 +29,7 @@ const mintNFT = async (req, res, next) => {
         const token_type = await getTokenType(token_address)
         logger.info("Metadata uploaded to IPFS")
         res.send({ ipfsHash, token_type, tokenCounter }).status(200);
+
     } catch(err){
         console.log(err)
         next({ status: 500, message: "IPFS Metadata Upload Error. Contact Admin" })
@@ -62,17 +62,16 @@ const saveMintNFT = async (req, res, next) => {
         let nftCreated = { _id: create.insertedId };
         let nft = await db.collection("nft_details").findOne(nftCreated);
         logger.info("NFT minted successfully")
-        nft_details = await getNFTDetails(req.body.coll_addr, req.body.token_id)
 
         //Add to market events
         const eventDocument = {
             nftContract: req.body.coll_addr,
             tokenId: req.body.token_id,
-            name: nft_details.name,
-            token_type: nft_details.token_type,
-            uri: nft_details.uri,
-            basicEvent: "List",
-            event: "Mint",
+            name: req.body.name,
+            token_type: collectionType.tokenType,
+            uri: req.body.uri,
+            basicEvent: "Mint",
+            eventType: "Mint",
             from: "",
             to: req.body.minter,
             price: "",
@@ -80,6 +79,7 @@ const saveMintNFT = async (req, res, next) => {
         };
 
         let event = await db.collection("market_events").insertOne(eventDocument);
+        logger.info("NFT data saved to market events successfully")
         res.send(nft).status(201);
     } catch (err) {
         logger.error(err);
@@ -122,7 +122,7 @@ const depositNFT = async (req, res, next) => {
         };
         const update = await db.collection("nft_details").updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(update)}`)
-        nft_details = await getNFTDetails(req.body.coll_addrt, req.body.token_id)
+        let nft_details = await getNFTDetails(req.body.coll_addrt, req.body.token_id)
 
         //Add to market events
         const depositEvent = {
