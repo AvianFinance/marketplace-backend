@@ -6,7 +6,6 @@ const db_name = config.db_name
 const uri = config.db_connection
 const client = new MongoClient(uri);
 
-
 const getNFTDetails =  async (address, tokenId) => {
     try{
         await client.connect();
@@ -62,7 +61,7 @@ async function itemListedEvent(data) {
         const collection1 = client.db(db_name).collection("nft_details");
         const result1 = await collection1.updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
-        nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
+        let nft_details = await getNFTDetails(data.nftAddress, parseInt(data.tokenId._hex))
 
         //Add to market events
         const event = {

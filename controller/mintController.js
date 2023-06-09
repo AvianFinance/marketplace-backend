@@ -2,17 +2,7 @@ const dbo = require('../database/conn')
 const { sendMetadata } = require('../services/pinata_upload')
 const { getTokenCounter, getTokenType } = require('../services/token_counter')
 const logger = require('../utils/logger');
-
-// @desc Get NFT details
-// @route GET 
-const getNFTDetails =  async (address, tokenId) => {
-    try{
-        const nft_data = await db.collection("nft_details").findOne({ coll_addr: address, token_id: tokenId});
-        return(nft_data)
-    } catch(err){
-        logger.error(err)
-    }
-}
+const { getNFTData } = require('./assetController');
 
 // @desc Upload to IPFS
 // @route POST /api/mint/ipfs
@@ -122,7 +112,7 @@ const depositNFT = async (req, res, next) => {
         };
         const update = await db.collection("nft_details").updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(update)}`)
-        let nft_details = await getNFTDetails(req.body.coll_addrt, req.body.token_id)
+        let nft_details = await getNFTData(req.body.coll_addrt, req.body.token_id)
 
         //Add to market events
         const depositEvent = {
@@ -131,7 +121,7 @@ const depositNFT = async (req, res, next) => {
             name: nft_details.name,
             token_type: nft_details.token_type,
             uri: nft_details.uri,
-            basicEvent: "List",
+            basicEvent: "Deposit",
             event: "Deposit",
             from: req.body.owner,
             to: req.body.coll_addr,
