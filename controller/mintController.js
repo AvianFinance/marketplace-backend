@@ -61,7 +61,7 @@ const saveMintNFT = async (req, res, next) => {
             token_type: collectionType.tokenType,
             uri: req.body.uri,
             basicEvent: "Mint",
-            eventType: "Mint",
+            event: "Mint",
             from: "",
             to: req.body.minter,
             price: "",
