@@ -10,7 +10,8 @@ const getNFTDetails =  async (address, tokenId) => {
     try{
         await client.connect();
         const collection = client.db(db_name).collection("nft_details");
-        const result = await collection.findOne({ coll_addr: address, token_id: tokenId});
+        const query1 = { coll_addr: address, token_id: tokenId};
+        const result = await collection.findOne(query1);
         return(result)
     } catch(err){
         logger.error(err)
@@ -21,9 +22,7 @@ const ImplUpgradeEvent =  async (data) => {
     try{
         await client.connect();
         const collection = client.db(db_name).collection("upgraded-contracts");
-        console.log(data)
         const result = await collection.updateOne({ contract_address: data.newImplAddrs }, { $set: { status: "Upgraded" } });
-        console.log(data)
         return(result)
     } catch(err){
         logger.error(err)
