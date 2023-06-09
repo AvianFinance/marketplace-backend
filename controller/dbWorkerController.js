@@ -180,7 +180,7 @@ async function nftListedEvent(data) {
         const result1 = await collection1.updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
 
-        let nft_details = await getNFTDetails(data.nftAddress, parseInt(data.tokenId._hex))
+        let nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
 
         //Insert to market events
         const event = {
@@ -233,7 +233,7 @@ async function nftRentedEvent(data) {
         const result1 = await collection1.updateOne(query1, updates1);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
 
-        let nft_details = await getNFTDetails(data.nftAddress, parseInt(data.tokenId._hex))
+        let nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
         
         //Add to market events
         const event = {
@@ -296,7 +296,7 @@ async function insNftListedEvent(data) {
         const result1 = await collection1.updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
         
-        let nft_details = await getNFTDetails(data.nftAddress, parseInt(data.tokenId._hex))
+        let nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
 
         //Add to market events
         const event = {
