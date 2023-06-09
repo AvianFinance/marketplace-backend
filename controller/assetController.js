@@ -3,6 +3,20 @@ const { getUserByAddress } = require('./userController')
 const logger = require("../utils/logger");
 const { query } = require("express");
 
+
+// @desc Get NFT details
+// @route GET 
+const getNFTData =  async (address, tokenId) => {
+    try{
+        const db = dbo.getDb();
+        const nft_data = await db.collection("nft_details").findOne({ coll_addr: address, token_id: tokenId});
+        console.log(nft_data)
+        return(nft_data)
+    } catch(err){
+        logger.error(err)
+    }
+}
+
 const getOneNft = async (req, res, next) => {
     try {
         const db = dbo.getDb();
@@ -100,5 +114,6 @@ module.exports = {
     getOneNft,
     getNftActivity,
     getNftCollectionActivity,
-    getUserNftActivity
+    getUserNftActivity,
+    getNFTData
 }
