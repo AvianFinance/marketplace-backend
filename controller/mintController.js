@@ -121,7 +121,7 @@ const depositNFT = async (req, res, next) => {
             name: nft_details.name,
             token_type: nft_details.token_type,
             uri: nft_details.uri,
-            basicEvent: "Deposit",
+            basicEvent: "Transfer",
             event: "Deposit",
             from: req.body.owner,
             to: req.body.coll_addr,
