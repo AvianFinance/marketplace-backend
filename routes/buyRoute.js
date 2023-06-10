@@ -61,7 +61,7 @@ const { getBuyCollections, getBuyCollectionTokens } = require('../controller/buy
  */
 
 // returns all collections with 4 tokens with images
-router.get('/explore',  getBuyCollections);
+router.get('/explore', getBuyCollections);
 
 /**
  * @swagger
@@ -135,6 +135,6 @@ router.get('/explore',  getBuyCollections);
  *
  */
 //returns details of all tokens inside the collection
-router.get('/explore/:collectionId',  getBuyCollectionTokens );  
+router.get('/explore/:collectionId', getBuyCollectionTokens);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createCollection, getCollectionByID } = require('../controller/collectionController');
+const { createCollection, getCollectionByID, createWrapperCollection } = require('../controller/collectionController');
 
 // returns all collections with 4 tokens with images
 // router.get('/',  getRentalCollections);
@@ -78,7 +78,7 @@ const { createCollection, getCollectionByID } = require('../controller/collectio
  *         description: Some server error
 */
 
-router.post('/',  createCollection);
+router.post('/', createCollection);
 
 /**
  * @swagger
@@ -135,6 +135,8 @@ router.post('/',  createCollection);
  *         description: Some server error
  *
  */
-router.get('/:userAddress',  getCollectionByID);
+router.get('/:userAddress', getCollectionByID);
+
+router.post('/wrapper', createWrapperCollection);
 
 module.exports = router;

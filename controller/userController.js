@@ -38,7 +38,7 @@ const loggedUser = async (req, res) => {
         let userCreated = { _id: create.insertedId };
         let user = await collection.findOne(userCreated);
         logger.info("New user Created!")
-        logger.info(user)
+        logger.info(JSON.stringify(user))
         res.send(user).status(201);
     } else {
         res.send(result).status(200);
