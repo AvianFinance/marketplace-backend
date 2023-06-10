@@ -112,7 +112,7 @@ const depositNFT = async (req, res, next) => {
         };
         const update = await db.collection("nft_details").updateOne(query, updates);
         logger.info(`nft_details Update result: ${JSON.stringify(update)}`)
-        let nft_details = await getNFTData(req.body.coll_addrt, req.body.token_id)
+        let nft_details = await getNFTData(req.body.coll_addr, req.body.token_id)
 
         //Add to market events
         const depositEvent = {
