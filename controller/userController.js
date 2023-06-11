@@ -8,8 +8,12 @@ const getUserById = async (req, res) => {
     let collection = await db.collection("users");
     let query = { _id: req.params.id };
     let result = await collection.findOne(query);
-    if (!result) res.send("Not found").status(404);
-    else res.send(result).status(200);
+    if (!result) {
+        res.statusCode = 404;
+        res.end('Not Found');
+    } else {
+        res.send(result).status(200);
+    }
 }
 
 // @desc User loggin
