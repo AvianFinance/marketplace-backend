@@ -54,7 +54,7 @@ const loggedUser = async (req, res) => {
 const updateUser = async (req, res) => {
     const db = dbo.getDb();
     const query = { _id: req.params.id };
-    logger.info(req.body)
+    logger.info(`User updates : ${JSON.stringify(req.body)}`)
     const updates = {
         $set: req.body
     };
