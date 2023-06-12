@@ -10,7 +10,7 @@ const getNFTData =  async (address, tokenId) => {
     try{
         const db = dbo.getDb();
         const nft_data = await db.collection("nft_details").findOne({ coll_addr: address, token_id: tokenId});
-        console.log(nft_data)
+        // console.log(nft_data)
         return(nft_data)
     } catch(err){
         logger.error(err)
@@ -99,9 +99,7 @@ const getUserNftActivity = async (req, res, next) => {
 
 const getNftCollectionActivity = async (req, res, next) => {
     try {
-        console.log(req.params.collectionId)
         const db = dbo.getDb();
-        console.log(req.params.collectionId)
         let query = { from: req.params.collectionId };
         let activities = await db.collection("market_events").find({ nftContract: req.params.collectionId }).toArray();
         res.send(activities).status(200);
