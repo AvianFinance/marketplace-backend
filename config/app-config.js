@@ -7,7 +7,7 @@ module.exports = {
     amplace_token: process.env.AMPLACE_TOKEN,
     db_connection: process.env.MONGODB_CONNECTION_STRING,
     insmplace_token: process.env.INSMPLACE_TOKEN,
-    db_name: "AVFX_DATA",
+    db_name: "AVFX",
     sell_exchange_token: process.env.SELL_EXCHANGE,
     rent_exchange_token: process.env.RENT_EXCHANGE,
     inst_exchange_token: process.env.INST_EXCHANGE,

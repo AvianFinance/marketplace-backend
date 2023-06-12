@@ -107,7 +107,7 @@ async function itemBoughtEvent(data) {
         // Update NFT details
         const query1 = { coll_addr: data.nftAddress, token_id: parseInt(data.tokenId._hex) };
         const updates1 = {
-            $set: { owner: data.buyer, sell_listed_status: false }
+            $set: { owner: data.buyer, user: data.buyer, sell_listed_status: false }
         };
         
         const collection1 = client.db(db_name).collection("nft_details");

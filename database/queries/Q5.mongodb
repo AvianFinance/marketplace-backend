@@ -1,5 +1,5 @@
 
-use('AVFX_DB');
+use('AVFX');
 
 db.users.deleteMany({})
 db.collections.deleteMany({})
