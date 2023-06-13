@@ -14,6 +14,7 @@ const createCollection = async (req, res, next) => {
       coverImage: "https://res.cloudinary.com/isuruieee/image/upload/v1679563964/3_1_pnqx8w.png",
       wrappedStatus: false,
       wrappedCollection: "",
+      wrapper: false,
       createdAt: new Date(),
       modifiedAt: new Date()
    };
@@ -40,6 +41,7 @@ const createWrapperCollection = async (req, res, next) => {
       coverImage: "https://res.cloudinary.com/isuruieee/image/upload/v1679563964/3_1_pnqx8w.png",
       wrappedStatus: false,
       wrappedCollection: "",
+      wrapper: true,
       createdAt: new Date(),
       modifiedAt: new Date()
    };
@@ -66,7 +68,7 @@ const createWrapperCollection = async (req, res, next) => {
 // @route GET /api/collection/:userAddress
 const getCollectionByID = async (req, res, next) => {
    const db = dbo.getDb();
-   let query = { createdBy: req.params.userAddress };
+   let query = { createdBy: req.params.userAddress, wrapper: false };
 
    try {
       let result = await db.collection("collections").find(query).toArray();
