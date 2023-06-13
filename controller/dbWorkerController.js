@@ -340,7 +340,7 @@ async function insNftPaidEvent(data) {
         
         //Get one nft detail to check the listing status
         const installment = await client.db(db_name).collection("nft_details").findOne(query1);
-        logger.info(JSON.stringify(installment));
+        // logger.info(JSON.stringify(installment));
 
         let nft_details = await getNFTDetails(data.nftContract, parseInt(data.tokenId._hex))
 
@@ -359,7 +359,7 @@ async function insNftPaidEvent(data) {
         };
 
         if (installment.inst_listed_status == true) {
-            logger.info("Rent NFT processing...")
+            logger.info("Installment Rent NFT processing...")
 
             // update installment listing
             const collection = client.db(db_name).collection("inst_listings");
@@ -380,20 +380,25 @@ async function insNftPaidEvent(data) {
         if (installment.inst_listed_status == false) {
             logger.info("Next installment pay processing...")
 
+            const updates3 = {
+                $set: { expiry: data.expires }
+            };
+            //Update nft details with expiry
+            const collection1 = client.db(db_name).collection("nft_details");
+            const result1 = await collection1.updateOne(query1, updates3);
+            logger.info(`nft_details Update result: ${JSON.stringify(result1)}`)
+
             //Insert to market events
             const collection2 = client.db(db_name).collection("market_events");
             const result2 = await collection2.insertOne(event);
             logger.info(`A document inserted to market_events with the _id: ${result2.insertedId}`);
-
-            //Update nft details with expiry
-            const update = await client.db(db_name).collection("nft_details").updateOne(query1, {expiry: data.expires})
-            logger.info(`nft_details Update result: ${JSON.stringify(update)}`)
         }
 
-        // Update status if the installment is paid
         if(parseInt(data.insIndex._hex) == parseInt(data.insCount._hex)){
+            logger.info("Installement Paying completed")
             const u_query = { nftContract: data.nftContract, tokenId: parseInt(data.tokenId._hex), inst_status: "PAYING"};
-            const collection = await client.db(db_name).collection("inst_listings").updateOne(u_query , {inst_status: "COMPLETED"});
+            const completed = await client.db(db_name).collection("inst_listings").updateOne(u_query , {$set: { inst_status: "COMPLETED"}});
+            logger.info(JSON.stringify(completed))
         }
     } catch (e) {
         logger.info("Error Updating database!")
