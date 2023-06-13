@@ -21,7 +21,8 @@ const mintNFT = async (req, res, next) => {
         res.send({ ipfsHash, token_type, tokenCounter }).status(200);
 
     } catch(err){
-        console.log(err)
+        // console.log(err)
+        logger.error(err)
         next({ status: 500, message: "IPFS Metadata Upload Error. Contact Admin" })
     }
 }
@@ -82,7 +83,7 @@ const saveMintNFT = async (req, res, next) => {
 const depositNFT = async (req, res, next) => {
     try {
         const db = dbo.getDb();
-        console.log(req.body)
+        // console.log(req.body)
         let collectionType = await db.collection("collections").findOne({ _id: req.body.coll_addr });
         const nftDocument = {
             coll_addr: req.body.coll_addr,
@@ -103,7 +104,7 @@ const depositNFT = async (req, res, next) => {
         let create = await db.collection("nft_details").insertOne(nftDocument);
         let nftCreated = { _id: create.insertedId };
         let nft = await db.collection("nft_details").findOne(nftCreated);
-        console.log(nft)
+        // console.log(nft)
         logger.info("NFT saved successfully")
 
         const query = { coll_addr: req.body.baseCollection, token_id: parseInt(req.body.token_id)};

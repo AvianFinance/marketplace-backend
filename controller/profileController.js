@@ -139,7 +139,7 @@ const getCollectionTokens = async (req, res, next) => {
         res.send(output).status(200);
     } catch (err) {
         logger.error(err);
-        console.log(err)
+        // console.log(err)
         next({ status: 500, message: err.message })
     }
 }

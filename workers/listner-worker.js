@@ -47,7 +47,7 @@ async function getTransfer() {
     })
 
     sell_exchange_contract.on("ImplUpgrade", (marketowner, newImplAddrs) => {
-        console.log("ImplUpgrade")
+        // console.log("ImplUpgrade")
         let transferEvent = {
             marketowner: marketowner,
             newImplAddrs: newImplAddrs,

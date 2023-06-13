@@ -1,7 +1,7 @@
 
-use('AVFX_Events');
+use('AVFX_DATA');
 
-db.nft_details.updateMany({},{$set: {"listed_status":false}})
+db.nft_details.createIndex( { coll_addr: 1, token_id: 1} )
 
 
 
