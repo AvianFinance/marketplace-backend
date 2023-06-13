@@ -8,8 +8,12 @@ const getUserById = async (req, res) => {
     let collection = await db.collection("users");
     let query = { _id: req.params.id };
     let result = await collection.findOne(query);
-    if (!result) res.send("Not found").status(404);
-    else res.send(result).status(200);
+    if (!result) {
+        res.statusCode = 404;
+        res.end('Not Found');
+    } else {
+        res.send(result).status(200);
+    }
 }
 
 // @desc User loggin
@@ -38,7 +42,7 @@ const loggedUser = async (req, res) => {
         let userCreated = { _id: create.insertedId };
         let user = await collection.findOne(userCreated);
         logger.info("New user Created!")
-        logger.info(user)
+        logger.info(JSON.stringify(user))
         res.send(user).status(201);
     } else {
         res.send(result).status(200);
@@ -50,7 +54,7 @@ const loggedUser = async (req, res) => {
 const updateUser = async (req, res) => {
     const db = dbo.getDb();
     const query = { _id: req.params.id };
-    logger.info(req.body)
+    logger.info(`User updates : ${JSON.stringify(req.body)}`)
     const updates = {
         $set: req.body
     };
