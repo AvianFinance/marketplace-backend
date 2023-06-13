@@ -107,7 +107,7 @@ async function itemBoughtEvent(data) {
         // Update NFT details
         const query1 = { coll_addr: data.nftAddress, token_id: parseInt(data.tokenId._hex) };
         const updates1 = {
-            $set: { owner: data.buyer, sell_listed_status: false }
+            $set: { owner: data.buyer, user: data.buyer, sell_listed_status: false }
         };
         
         const collection1 = client.db(db_name).collection("nft_details");
@@ -241,7 +241,7 @@ async function nftRentedEvent(data) {
             name: nft_details.name,
             token_type: nft_details.token_type,
             uri: nft_details.uri,
-            basicEvent: "Payment",
+            basicEvent: "Transfer",
             event: "Rent [Upright]",
             from: data.owner,
             to: data.user,
@@ -350,7 +350,7 @@ async function insNftPaidEvent(data) {
             name: nft_details.name,
             token_type: nft_details.token_type,
             uri: nft_details.uri,
-            basicEvent: "Payment",
+            basicEvent: "Transfer",
             event: "Paid [Installment Rent]",
             from: data.user,
             to: data.owner,
