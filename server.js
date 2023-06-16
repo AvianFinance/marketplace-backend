@@ -19,8 +19,8 @@ routes.endPointsHandler(app);
 app.use(errorHandler);
 
 // Initial worker thread
-const { Worker } = require("worker_threads");
-const worker = new Worker("./workers/index", { workerData: "Main listner" });
+// const { Worker } = require("worker_threads");
+// const worker = new Worker("./workers/index", { workerData: "Main listner" });
 
 const PORT = config.port || 8080;
 dbo.connectToServer(function (err) {

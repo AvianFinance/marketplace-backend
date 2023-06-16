@@ -14,15 +14,18 @@ const mintNFT = async (req, res, next) => {
         const IPFSLink = req.body.uri
     
         const tokenCounter = await getTokenCounter(token_address)
-    
+        console.log(tokenCounter)
         const ipfsHash = await sendMetadata(IPFSLink, nft_name, nft_desc, tokenCounter)
+        console.log(ipfsHash)
         const token_type = await getTokenType(token_address)
+        console.log(token_type)
         logger.info("Metadata uploaded to IPFS")
         res.send({ ipfsHash, token_type, tokenCounter }).status(200);
 
     } catch(err){
         // console.log(err)
         logger.error(err)
+        console.log(err)
         next({ status: 500, message: "IPFS Metadata Upload Error. Contact Admin" })
     }
 }
